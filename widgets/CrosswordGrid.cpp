@@ -13,6 +13,7 @@
 
 #include "CrosswordGrid.h"
 
+#include <QHeaderView>
 #include <QMouseEvent>
 
 CrosswordGrid::CrosswordGrid( QWidget* parent )
@@ -20,6 +21,8 @@ CrosswordGrid::CrosswordGrid( QWidget* parent )
     , m_puzzle( 0 )
     , m_focusOrientation( FocusHorizontal )
 {
+    horizontalHeader()->hide();
+    verticalHeader()->hide();
 //    setBackgroundColor( "white" );
 }
 

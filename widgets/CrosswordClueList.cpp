@@ -19,6 +19,9 @@ CrosswordClueList::CrosswordClueList( QWidget* parent )
     , m_puzzle( 0 )
     , m_clueList( AcrossLiteClue::Unknown )
 {
+    setSortingEnabled( false );
+    setSelectionMode( QAbstractItemView::SingleSelection );
+
     connect( this, SIGNAL( currentItemChanged(QListWidgetItem*, QListWidgetItem*) ),
              this, SLOT  ( currentClueChanged(QListWidgetItem*, QListWidgetItem*) ) );
 }
@@ -72,26 +75,27 @@ AcrossLiteClue::Orientation CrosswordClueList::clueList()
 
 void CrosswordClueList::clueSelected( int n )
 {
-    for ( uint i = 0; i < count(); i++ )
+    clearSelection();
+    for( int i = 0; i < count(); i++ )
     {
-        CrosswordClue* clue = ( CrosswordClue* ) item( i );
-        if ( clue->number() == n )
+        CrosswordClue* clue = static_cast<CrosswordClue*>( item( i ) );
+        if( clue->number() == n )
         {
-            setSelected( i, true );
+            clue->setSelected( true );
+            scrollToItem( clue, EnsureVisible );
             break;
         }
     }
-
-    ensureCurrentVisible();
 }
 
 void CrosswordClueList::currentClueChanged( QListWidgetItem *current, QListWidgetItem *previous )
 {
     Q_UNUSED( previous )
 
-    CrosswordClue* clue = dynamic_cast<CrosswordClue*>(item);
+    CrosswordClue* clue = static_cast<CrosswordClue*>(current);
 
     if( clue )
         emit clueSelected( clueList(), clue->number() );
 }
+
 

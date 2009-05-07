@@ -17,10 +17,9 @@ class CrosswordClue : public QListWidgetItem
         CrosswordClue( const int number, const QString& text, QListWidget *parent )
             : QListWidgetItem( parent )
         {
-            m_number = n;
-            setText( QString::number( number() ) + QString( "." ) + text );
+            m_number = number;
+            setText( QString::number( m_number ) + ". " + text );
         }
-
 
         int number() const { return m_number; }
 

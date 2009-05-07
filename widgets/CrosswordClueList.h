@@ -14,9 +14,11 @@
 #ifndef CROSSWORDCLUELIST_H
 #define CROSSWORDCLUELIST_H
 
+#include "acrosslite/AcrossLiteClue.h"
 #include "acrosslite/AcrossLitePuzzle.h"
 
-#include <QWidget>
+#include <QListWidget>
+#include <QListWidgetItem>
 
 /**
   * A widget which holds a list of clues for the crossword puzzle

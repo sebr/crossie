@@ -21,14 +21,12 @@ class MainWindow : public QMainWindow
 
     public:
         MainWindow( QWidget *parent = 0 );
-        ~MainWindow();
 
     public slots:
         void setPuzzle( const QString& filename );
         void savePuzzle( const QString& filename );
         void launchOpenDialog();
         void launchSaveDialog();
-        void launchAboutDialog();
         void revealSolution();
         void revealWord();
         void revealLetter();

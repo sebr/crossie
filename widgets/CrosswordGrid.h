@@ -18,10 +18,10 @@
 
 #include "acrosslite/AcrossLitePuzzle.h"
 
-#include <QWidget>
+#include <QTableWidget>
 #include <QGridLayout>
 
-class CrosswordGrid : public QWidget
+class CrosswordGrid : public QTableWidget
 {
     Q_OBJECT
 
@@ -49,7 +49,6 @@ public:
     void checkWord();
     void checkLetter();
 
-    CrosswordCell* focusCell();
     CrosswordCell* cell( const int col, const int row );
     CrosswordCell* cell( const int number );
     void setFocusCell( const int col, const int row );
@@ -82,9 +81,7 @@ private:
     CrosswordGrid();
 
     AcrossLitePuzzle*     m_puzzle;
-    QGridLayout*          m_gridLayout;
     FocusOrientation      m_focusOrientation;
-    QList<CrosswordCell*> m_cells;
 };
 
 

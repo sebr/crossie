@@ -64,7 +64,7 @@ void Crossword::setPuzzle (const QString& filename)
 
     delete m_puzzle;
 
-    m_puzzle = new AcrossLitePuzzle(filename.ascii());
+    m_puzzle = new AcrossLitePuzzle( filename.toAscii().data() );
 
     m_grid->setPuzzle( m_puzzle );
     m_acrossClues->setPuzzle( m_puzzle, AcrossLiteClue::Across );

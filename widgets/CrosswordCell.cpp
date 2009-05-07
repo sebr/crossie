@@ -13,8 +13,8 @@
 
 #include "CrosswordCell.h"
 
-CrosswordCell::CrosswordCell( QWidget* parent )
-    : QWidget( parent )
+CrosswordCell::CrosswordCell()
+    : QTableWidgetItem()
     , m_colLabel( 0 )
     , m_rowLabel( 0 )
     , m_solution( '.' )
@@ -38,7 +38,7 @@ QSize CrosswordCell::sizeHint() const
 
 QSizePolicy CrosswordCell::sizePolicy() const
 {
-    return QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred, true );
+    return QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
 }
 
 void CrosswordCell::setSolution( const QChar &letter )

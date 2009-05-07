@@ -38,8 +38,8 @@ MainWindow::MainWindow( QWidget *parent )
     viewMenu->addSeparator();
     viewMenu->addAction( "Clear",         this, SLOT( clearSolution() ) );
 
-    QMenu *helpMenu = menuBar()->addMenu( tr( "&Help" ) );
-    helpMenu->addAction( "About...",      this, SLOT( launchAboutDialog() ) );
+//    QMenu *helpMenu = menuBar()->addMenu( tr( "&Help" ) );
+//    helpMenu->addAction( "About...",      this, SLOT( launchAboutDialog() ) );
 
 //    toolBar()->setLabel( "Puzzle Operations" );
 
@@ -133,4 +133,3 @@ void MainWindow::clearSolution()
 {
     m_crossword->clearSolution();
 }
-

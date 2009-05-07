@@ -3,33 +3,34 @@
 
 #include <QWidget>
 
-class CrossWord : public QWidget {
+class Crossword : public QWidget
+{
     Q_OBJECT
 
-    public:
-        CrossWord (QWidget* parent, char* name = 0);
-       ~CrossWord ();
+public:
+    Crossword( QWidget* parent, char* name = 0 );
+    ~Crossword();
 
-        void                                setPuzzle               (const QString& filename);
-        void                                savePuzzle              (const QString& filename);
+    void setPuzzle( const QString& filename );
+    void savePuzzle( const QString& filename );
 
-        void                                clearSolution           ();
-        void                                revealSolution          (const bool flag);
-        void                                revealWord              (const bool flag);
-        void                                revealLetter            (const bool flag);
-        void                                checkSolution           ();
-        void                                checkWord               ();
-        void                                checkLetter             ();
+    void clearSolution();
+    void revealSolution( const bool flag );
+    void revealWord( const bool flag );
+    void revealLetter( const bool flag );
+    void checkSolution();
+    void checkWord();
+    void checkLetter();
 
-    public slots:
-        void                                handleNewColRowFocused  (int newCol, int newRow);
+public slots:
+    void handleNewColRowFocused( int newCol, int newRow );
 
-    private:
-       AcrossLitePuzzleBase*                _puzzle;
-       QHGroupBox*                          _puzzleGroupBox;
-       CrossWordGrid*                     _grid;
-       CrossWordClueList*                 _acrossClues;
-       CrossWordClueList*                 _downClues;
+private:
+    AcrossLitePuzzleBase* m_puzzle;
+    QHGroupBox*           m_puzzleGroupBox;
+    CrosswordGrid*        m_grid;
+    CrosswordClueList*    m_acrossClues;
+    CrosswordClueList*    m_downClues;
 };
 
 

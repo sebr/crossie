@@ -1,31 +1,31 @@
 
 #include "MainWindow.h"
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow( parent )
+MainWindow::MainWindow( QWidget *parent )
+        : QMainWindow( parent )
 {
-    _crossWord = new CrossWord(this);
+    m_crossword = new Crossword( this );
 
-    setCentralWidget (_crossWord);
+    setCentralWidget( m_crossword );
 
-    QMenu *fileMenu = menuBar()->addMenu( tr("&File") );
-    fileMenu->insertItem("&Open...", this, SLOT(launchOpenDialog()), QKeySequence::Open );
-    fileMenu->insertItem("&Save...", this, SLOT(launchSaveDialog()), QKeySequence::Save );
-    fileMenu->insertItem("&Quit", qApp, SLOT(quit()) );
+    QMenu *fileMenu = menuBar()->addMenu( tr( "&File" ) );
+    fileMenu->insertItem( "&Open...", this, SLOT( launchOpenDialog() ), QKeySequence::Open );
+    fileMenu->insertItem( "&Save...", this, SLOT( launchSaveDialog() ), QKeySequence::Save );
+    fileMenu->insertItem( "&Quit", qApp, SLOT( quit() ) );
 
-    QMenu *viewMenu = menuBar()->addMenu( tr("&View") );
-    viewMenu->insertItem(QPixmap(solution_xpm),       "Reveal Puzzle",   this, SLOT(revealSolution()) );
-    viewMenu->insertItem(QPixmap(word_xpm),           "Reveal Word",     this, SLOT(revealWord())     );
-    viewMenu->insertItem(QPixmap(letter_xpm),         "Reveal Letter",   this, SLOT(revealLetter())   );
+    QMenu *viewMenu = menuBar()->addMenu( tr( "&View" ) );
+    viewMenu->insertItem( QPixmap( solution_xpm ),       "Reveal Puzzle",   this, SLOT( revealSolution() ) );
+    viewMenu->insertItem( QPixmap( word_xpm ),           "Reveal Word",     this, SLOT( revealWord() ) );
+    viewMenu->insertItem( QPixmap( letter_xpm ),         "Reveal Letter",   this, SLOT( revealLetter() ) );
     viewMenu->insertSeparator();
-    viewMenu->insertItem(QPixmap(check_solution_xpm), "Check Puzzle",    this, SLOT(checkSolution())  );
-    viewMenu->insertItem(QPixmap(check_word_xpm),     "Check Word",      this, SLOT(checkWord())      );
-    viewMenu->insertItem(QPixmap(check_letter_xpm),   "Check Letter",    this, SLOT(checkLetter())    );
+    viewMenu->insertItem( QPixmap( check_solution_xpm ), "Check Puzzle",    this, SLOT( checkSolution() ) );
+    viewMenu->insertItem( QPixmap( check_word_xpm ),     "Check Word",      this, SLOT( checkWord() ) );
+    viewMenu->insertItem( QPixmap( check_letter_xpm ),   "Check Letter",    this, SLOT( checkLetter() ) );
     viewMenu->insertSeparator();
-    viewMenu->insertItem(                             "Clear",           this, SLOT(clearSolution())  );
+    viewMenu->insertItem( "Clear",           this, SLOT( clearSolution() ) );
 
-    QMenu *helpMenu = menuBar()->addMenu( tr("&Help") );
-    helpMenu->insertItem("About...",                                     this, SLOT(launchAboutDialog()) );
+    QMenu *helpMenu = menuBar()->addMenu( tr( "&Help" ) );
+    helpMenu->insertItem( "About...",                                     this, SLOT( launchAboutDialog() ) );
 
 //    toolBar()->setLabel( "Puzzle Operations" );
 
@@ -54,60 +54,73 @@ MainWindow::MainWindow(QWidget *parent)
 //    statusBar()->message ("Enjoy!", 5000);
 }
 
-void MainWindow::launchOpenDialog() {
-    const QString fileName = QFileDialog::getOpenFileName(this,
-                                    tr("Open Crossword"),
-                                    QDir::homePath(),
-                                    tr("Crossword Files (*.puz)"));
-    setPuzzle (filename);
+void MainWindow::launchOpenDialog()
+{
+    const QString fileName = QFileDialog::getOpenFileName( this,
+                             tr( "Open Crossword" ),
+                             QDir::homePath(),
+                             tr( "Crossword Files (*.puz)" ) );
+    setPuzzle( filename );
 }
 
-void MainWindow::launchSaveDialog() {
-    const QString fileName = QFileDialog::getSaveFileName(this,
-                                    tr("Save Crossword"),
-                                    QDir::homePath(),
-                                    tr("Crossword Files (*.puz)"));
+void MainWindow::launchSaveDialog()
+{
+    const QString fileName = QFileDialog::getSaveFileName( this,
+                             tr( "Save Crossword" ),
+                             QDir::homePath(),
+                             tr( "Crossword Files (*.puz)" ) );
 
-    savePuzzle (filename);
+    savePuzzle( filename );
 }
 
-void MainWindow::setPuzzle (const QString& filename) {
-    if (!filename.isNull()) {
-        _crossWord->setPuzzle(filename);
+void MainWindow::setPuzzle( const QString& filename )
+{
+    if ( !filename.isNull() )
+    {
+        m_crossword->setPuzzle( filename );
     }
 }
 
-void MainWindow::savePuzzle (const QString& filename) {
-    if (!filename.isNull()) {
-        _crossWord->savePuzzle(filename);
+void MainWindow::savePuzzle( const QString& filename )
+{
+    if ( !filename.isNull() )
+    {
+        m_crossword->savePuzzle( filename );
     }
 }
 
-void MainWindow::revealSolution () {
-    _crossWord->revealSolution(true);
+void MainWindow::revealSolution()
+{
+    m_crossword->revealSolution( true );
 }
 
-void MainWindow::revealWord () {
-    _crossWord->revealWord(true);
+void MainWindow::revealWord()
+{
+    m_crossword->revealWord( true );
 }
 
-void MainWindow::revealLetter () {
-    _crossWord->revealLetter(true);
+void MainWindow::revealLetter()
+{
+    m_crossword->revealLetter( true );
 }
 
-void MainWindow::checkSolution () {
-    _crossWord->checkSolution();
+void MainWindow::checkSolution()
+{
+    m_crossword->checkSolution();
 }
 
-void MainWindow::checkWord () {
-    _crossWord->checkWord();
+void MainWindow::checkWord()
+{
+    m_crossword->checkWord();
 }
 
-void MainWindow::checkLetter () {
-    _crossWord->checkLetter();
+void MainWindow::checkLetter()
+{
+    m_crossword->checkLetter();
 }
 
-void MainWindow::clearSolution () {
-    _crossWord->clearSolution();
+void MainWindow::clearSolution()
+{
+    m_crossword->clearSolution();
 }
 

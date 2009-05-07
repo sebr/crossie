@@ -3,33 +3,33 @@
 
 #include <QWidget>
 
-class CrossWordClueList : public QWidget
+class CrosswordClueList : public QWidget
 {
     Q_OBJECT
 
-    public:
-        CrossWordClueList( AcrossLitePuzzleBase* puzzle, AcrossLiteClue::Orientation clueList, QWidget* parent, char* name = 0 );
-        CrossWordClueList( QWidget* parent, char* name = 0 );
-       ~CrossWordClueList();
+public:
+    CrosswordClueList( AcrossLitePuzzleBase* puzzle, AcrossLiteClue::Orientation clueList, QWidget* parent, char* name = 0 );
+    CrosswordClueList( QWidget* parent, char* name = 0 );
+    ~CrosswordClueList();
 
-        void                                setPuzzle           (AcrossLitePuzzleBase* puzzle, AcrossLiteClue::Orientation clueList);
-        AcrossLitePuzzleBase*               puzzle              ();
-        AcrossLiteClue::Orientation         clueList            ();
+    void                        setPuzzle( AcrossLitePuzzleBase* puzzle, AcrossLiteClue::Orientation clueList );
+    AcrossLitePuzzleBase*       puzzle();
+    AcrossLiteClue::Orientation clueList();
 
-    signals:
-        void                                clueSelected        (AcrossLiteClue::Orientation o, int number);
+signals:
+    void clueSelected( AcrossLiteClue::Orientation o, int number );
 
-    public slots:
-        void                                clueSelected        (int number);
+public slots:
+    void clueSelected( int number );
 
-    private slots:
-        void                                _selected           (QListBoxItem* item);
+private slots:
+    void _selected( QListBoxItem* item );
 
-    private:
-        CrossWordClueList ( );
+private:
+    CrosswordClueList( );
 
-        AcrossLitePuzzleBase*               _puzzle;
-        AcrossLiteClue::Orientation         _clueList;
+    AcrossLitePuzzleBase*       m_puzzle;
+    AcrossLiteClue::Orientation m_clueList;
 };
 
 

@@ -3,16 +3,16 @@
 
 class CrosswordClue : public QListBoxText
 {
-    public:
-       CrossWordClue(const int number, QListBox* listbox, const QString& text);
-       CrossWordClue(const int number, const QString& text);
-       CrossWordClue(const int number, QListBox* listbox, const QString& text, QListBoxItem* after);
-      ~CrossWordClue ();
+public:
+    CrosswordClue( const int number, QListBox* listbox, const QString& text );
+    CrosswordClue( const int number, const QString& text );
+    CrosswordClue( const int number, QListBox* listbox, const QString& text, QListBoxItem* after );
+    ~CrosswordClue();
 
-       int number() const;
+    int number() const;
 
-    private:
-       int _number;
+private:
+    int m_number;
 };
 
 #endif // CROSSWORDCLUE_H

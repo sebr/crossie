@@ -28,7 +28,7 @@ class MainWindow : public QMainWindow
         void clearSolution();
 
     private:
-        CrossWord*  _crossWord;
+        Crossword*  m_crossword;
 };
 
 #endif // MAINWINDOW_H

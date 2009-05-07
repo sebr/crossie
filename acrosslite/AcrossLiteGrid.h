@@ -15,7 +15,6 @@
 #define ACROSSLITEGRID_H
 
 #include "AcrossLiteClue.h"
-#include "AcrossLiteGrid.h"
 
 using namespace std;
 

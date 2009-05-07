@@ -14,6 +14,8 @@
 #ifndef CROSSWORDCLUELIST_H
 #define CROSSWORDCLUELIST_H
 
+#include "acrosslite/AcrossLitePuzzle.h"
+
 #include <QWidget>
 
 /**
@@ -22,33 +24,30 @@
   *   - across clues
   *   - down clues
   */
-class CrosswordClueList : public QWidget
+class CrosswordClueList : public QListWidget
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    CrosswordClueList( AcrossLitePuzzleBase* puzzle, AcrossLiteClue::Orientation clueList, QWidget* parent, char* name = 0 );
-    CrosswordClueList( QWidget* parent, char* name = 0 );
-    ~CrosswordClueList();
+    public:
+        CrosswordClueList( QWidget* parent );
+        ~CrosswordClueList();
 
-    void                        setPuzzle( AcrossLitePuzzleBase* puzzle, AcrossLiteClue::Orientation clueList );
-    AcrossLitePuzzleBase*       puzzle();
-    AcrossLiteClue::Orientation clueList();
+        void                        setPuzzle( AcrossLitePuzzle* puzzle, AcrossLiteClue::Orientation clueList );
+        AcrossLitePuzzle*           puzzle();
+        AcrossLiteClue::Orientation clueList();
 
-signals:
-    void clueSelected( AcrossLiteClue::Orientation o, int number );
+    signals:
+        void clueSelected( AcrossLiteClue::Orientation o, int number );
 
-public slots:
-    void clueSelected( int number );
+    public slots:
+        void clueSelected( int number );
 
-private slots:
-    void _selected( QListBoxItem* item );
+    private slots:
+        void currentClueChanged( QListWidgetItem *current, QListWidgetItem *previous );
 
-private:
-    CrosswordClueList( );
-
-    AcrossLitePuzzleBase*       m_puzzle;
-    AcrossLiteClue::Orientation m_clueList;
+    private:
+        AcrossLitePuzzle            *m_puzzle;
+        AcrossLiteClue::Orientation  m_clueList;
 };
 
 

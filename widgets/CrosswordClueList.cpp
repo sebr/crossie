@@ -12,64 +12,55 @@
  ***************************************************************************/
 
 #include "CrosswordClueList.h"
+#include "CrosswordClue.h"
 
-CrosswordClueList::CrosswordClueList( QWidget* parent, char* name )
-    : QListBox( parent, name )
+CrosswordClueList::CrosswordClueList( QWidget* parent )
+    : QListWidget( parent )
+    , m_puzzle( 0 )
+    , m_clueList( AcrossLiteClue::Unknown )
 {
-    m_puzzle   = 0;
-    m_clueList = AcrossLiteClue::Unknown;
-
-    QObject::connect( this, SIGNAL( pressed( QListBoxItem* ) ), this, SLOT( m_selected( QListBoxItem* ) ) );
+    connect( this, SIGNAL( currentItemChanged(QListWidgetItem*, QListWidgetItem*) ),
+             this, SLOT  ( currentClueChanged(QListWidgetItem*, QListWidgetItem*) ) );
 }
 
-CrosswordClueList::CrosswordClueList( AcrossLitePuzzleBase* puzzle, AcrossLiteClue::Orientation clueList, QWidget* parent )
-    : QListBox( parent )
-{
-    m_puzzle   = 0;
-    m_clueList = AcrossLiteClue::Unknown;
-
-    setPuzzle( puzzle, clueList );
-}
 
 CrosswordClueList::~CrosswordClueList()
 {
 }
 
-void CrosswordClueList::setPuzzle( AcrossLitePuzzleBase* puzzle, AcrossLiteClue::Orientation clueList )
+void CrosswordClueList::setPuzzle( AcrossLitePuzzle* puzzle, AcrossLiteClue::Orientation clueList )
 {
     m_puzzle   = puzzle;
     m_clueList = clueList;
 
     clear();
 
+    AcrossLiteClues::const_iterator it;
+    AcrossLiteClues::const_iterator end;
+
     if ( m_clueList == AcrossLiteClue::Across )
     {
-        AcrossLiteClues::const_iterator b = m_puzzle->beginAcrossClue();
-        AcrossLiteClues::const_iterator e = m_puzzle->endAcrossClue();
-        while ( b != e )
-        {
-            CrosswordClue* clue = new CrosswordClue(( *b ).number(), QString(( *b ).clue().c_str() ) );
-            insertItem( clue );
-
-            b++;
-        }
-
+        it = m_puzzle->beginAcrossClue();
+        end = m_puzzle->endAcrossClue();
     }
     else if ( m_clueList == AcrossLiteClue::Down )
     {
-        AcrossLiteClues::const_iterator b = m_puzzle->beginDownClue();
-        AcrossLiteClues::const_iterator e = m_puzzle->endDownClue();
-        while ( b != e )
-        {
-            CrosswordClue* clue = new CrosswordClue(( *b ).number(), QString(( *b ).clue().c_str() ) );
-            insertItem( clue );
+        it = m_puzzle->beginDownClue();
+        end = m_puzzle->endDownClue();
+    }
 
-            b++;
-        }
+    while( it != end )
+    {
+        const AcrossLiteClue alClue = *it;
+        const QString question = QString( alClue.clue().c_str() );
+        CrosswordClue* clue = new CrosswordClue( alClue.number(), question, this );
+        addItem( clue );
+
+        it++;
     }
 }
 
-AcrossLitePuzzleBase* CrosswordClueList::puzzle()
+AcrossLitePuzzle* CrosswordClueList::puzzle()
 {
     return m_puzzle;
 }
@@ -81,7 +72,7 @@ AcrossLiteClue::Orientation CrosswordClueList::clueList()
 
 void CrosswordClueList::clueSelected( int n )
 {
-    for ( unsigned int i = 0; i < count(); i++ )
+    for ( uint i = 0; i < count(); i++ )
     {
         CrosswordClue* clue = ( CrosswordClue* ) item( i );
         if ( clue->number() == n )
@@ -94,13 +85,13 @@ void CrosswordClueList::clueSelected( int n )
     ensureCurrentVisible();
 }
 
-void CrosswordClueList::_selected( QListBoxItem* item )
+void CrosswordClueList::currentClueChanged( QListWidgetItem *current, QListWidgetItem *previous )
 {
-    CrosswordClue* clue = ( CrosswordClue* ) item;
+    Q_UNUSED( previous )
 
-    if ( clue )
-    {
+    CrosswordClue* clue = dynamic_cast<CrosswordClue*>(item);
+
+    if( clue )
         emit clueSelected( clueList(), clue->number() );
-    }
 }
 

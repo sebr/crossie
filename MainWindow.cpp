@@ -10,6 +10,11 @@
 
 #include "MainWindow.h"
 
+#include <QApplication>
+#include <QMenu>
+#include <QMenuBar>
+#include <QFileDialog>
+
 MainWindow::MainWindow( QWidget *parent )
         : QMainWindow( parent )
 {
@@ -18,23 +23,23 @@ MainWindow::MainWindow( QWidget *parent )
     setCentralWidget( m_crossword );
 
     QMenu *fileMenu = menuBar()->addMenu( tr( "&File" ) );
-    fileMenu->insertAction( "&Open...", this, SLOT( launchOpenDialog() ), QKeySequence::Open );
-    fileMenu->insertAction( "&Save...", this, SLOT( launchSaveDialog() ), QKeySequence::Save );
-    fileMenu->insertAction( "&Quit",    qApp, SLOT( quit() ) );
+    fileMenu->addAction( "&Open...", this, SLOT( launchOpenDialog() ), QKeySequence::Open );
+    fileMenu->addAction( "&Save...", this, SLOT( launchSaveDialog() ), QKeySequence::Save );
+    fileMenu->addAction( "&Quit",    qApp, SLOT( quit() ) );
 
     QMenu *viewMenu = menuBar()->addMenu( tr( "&View" ) );
-    viewMenu->insertAction( "Reveal Puzzle", this, SLOT( revealSolution() ) );
-    viewMenu->insertAction( "Reveal Word",   this, SLOT( revealWord() ) );
-    viewMenu->insertAction( "Reveal Letter", this, SLOT( revealLetter() ) );
+    viewMenu->addAction( "Reveal Puzzle", this, SLOT( revealSolution() ) );
+    viewMenu->addAction( "Reveal Word",   this, SLOT( revealWord() ) );
+    viewMenu->addAction( "Reveal Letter", this, SLOT( revealLetter() ) );
     viewMenu->addSeparator();
-    viewMenu->insertAction( "Check Puzzle",  this, SLOT( checkSolution() ) );
-    viewMenu->insertAction( "Check Word",    this, SLOT( checkWord() ) );
-    viewMenu->insertAction( "Check Letter",  this, SLOT( checkLetter() ) );
+    viewMenu->addAction( "Check Puzzle",  this, SLOT( checkSolution() ) );
+    viewMenu->addAction( "Check Word",    this, SLOT( checkWord() ) );
+    viewMenu->addAction( "Check Letter",  this, SLOT( checkLetter() ) );
     viewMenu->addSeparator();
-    viewMenu->insertAction( "Clear",         this, SLOT( clearSolution() ) );
+    viewMenu->addAction( "Clear",         this, SLOT( clearSolution() ) );
 
     QMenu *helpMenu = menuBar()->addMenu( tr( "&Help" ) );
-    helpMenu->insertAction( "About...",      this, SLOT( launchAboutDialog() ) );
+    helpMenu->addAction( "About...",      this, SLOT( launchAboutDialog() ) );
 
 //    toolBar()->setLabel( "Puzzle Operations" );
 
@@ -65,7 +70,7 @@ MainWindow::MainWindow( QWidget *parent )
 
 void MainWindow::launchOpenDialog()
 {
-    const QString fileName = QFileDialog::getOpenFileName( this,
+    const QString filename = QFileDialog::getOpenFileName( this,
                              tr( "Open Crossword" ),
                              QDir::homePath(),
                              tr( "Crossword Files (*.puz)" ) );
@@ -74,7 +79,7 @@ void MainWindow::launchOpenDialog()
 
 void MainWindow::launchSaveDialog()
 {
-    const QString fileName = QFileDialog::getSaveFileName( this,
+    const QString filename = QFileDialog::getSaveFileName( this,
                              tr( "Save Crossword" ),
                              QDir::homePath(),
                              tr( "Crossword Files (*.puz)" ) );

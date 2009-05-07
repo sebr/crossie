@@ -47,8 +47,6 @@ public:
     virtual QSizePolicy sizePolicy() const;
 
 private:
-    CrosswordCell();
-
     int  m_colLabel;
     int  m_rowLabel;
     QChar m_solution;

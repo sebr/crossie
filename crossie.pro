@@ -8,7 +8,6 @@ SOURCES += main.cpp \
     acrosslite/AcrossLiteClue.cpp \
     acrosslite/AcrossLiteGrid.cpp \
     acrosslite/AcrossLitePuzzle.cpp \
-    widgets/CrosswordClue.cpp \
     widgets/CrosswordClueList.cpp \
     widgets/CrosswordCell.cpp \
     widgets/CrosswordGrid.cpp \

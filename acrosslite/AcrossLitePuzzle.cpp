@@ -13,7 +13,13 @@
 
 #include "AcrossLitePuzzle.h"
 
-AcrossLitePuzzle::AcrossLitePuzzle( const string& filename ) : AcrossLitePuzzle()
+#include <fcntl.h>
+#include <string.h>
+
+
+
+
+AcrossLitePuzzle::AcrossLitePuzzle( const string& filename )
 {
     load( filename );
 }

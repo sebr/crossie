@@ -14,6 +14,9 @@
 #ifndef CROSSWORD_H
 #define CROSSWORD_H
 
+#include "CrosswordGrid.h"
+#include "CrosswordClueList.h"
+
 #include "acrosslite/AcrossLitePuzzle.h"
 
 #include <QGroupBox>

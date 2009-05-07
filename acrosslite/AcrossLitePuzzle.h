@@ -14,6 +14,9 @@
 #ifndef ACROSSLITEPUZZLE_H
 #define ACROSSLITEPUZZLE_H
 
+#include "AcrossLiteClue.h"
+#include "AcrossLiteGrid.h"
+
 using namespace std;
 
 #include <vector>

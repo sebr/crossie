@@ -14,7 +14,12 @@
 #ifndef CROSSWORDGRID_H
 #define CROSSWORDGRID_H
 
+#include "CrosswordCell.h"
+
+#include "acrosslite/AcrossLitePuzzle.h"
+
 #include <QWidget>
+#include <QGridLayout>
 
 class CrosswordGrid : public QWidget
 {
@@ -32,8 +37,8 @@ public:
     CrosswordGrid( QWidget* parent );
     ~CrosswordGrid();
 
-    void setPuzzle( AcrossLitePuzzleBase* puzzle );
-    AcrossLitePuzzleBase* puzzle();
+    void setPuzzle( AcrossLitePuzzle* puzzle );
+    AcrossLitePuzzle* puzzle();
     void savePuzzle( const QString& filename );
 
     void revealSolution( const bool flag );
@@ -76,7 +81,7 @@ signals:
 private:
     CrosswordGrid();
 
-    AcrossLitePuzzleBase* m_puzzle;
+    AcrossLitePuzzle*     m_puzzle;
     QGridLayout*          m_gridLayout;
     FocusOrientation      m_focusOrientation;
     QList<CrosswordCell*> m_cells;

@@ -2,3 +2,4 @@ Makefile
 *.o
 moc_*
 crossie
+crossie.pro.user

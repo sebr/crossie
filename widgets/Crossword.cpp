@@ -21,26 +21,40 @@ Crossword::Crossword( QWidget* parent )
 {
     // Create widgets
     m_puzzleGroupBox = new QGroupBox( "Puzzle", this );
+    QVBoxLayout *puzzleLayout = new QVBoxLayout( m_puzzleGroupBox );
 
-    m_grid = new CrosswordGrid( m_puzzleGroupBox );
+    m_grid = new CrosswordGrid( this );
     m_grid->setMinimumSize( 500, 500 );
+    puzzleLayout->addWidget( m_grid );
+    m_puzzleGroupBox->setLayout( puzzleLayout );
 
     // CLUES LAYOUT
     QWidget     *cluesBox       = new QWidget( this );
     QVBoxLayout *cluesBoxLayout = new QVBoxLayout( cluesBox );
 
     QGroupBox* acrossGroupBox = new QGroupBox( "Across", cluesBox );
+    QVBoxLayout *acrossCluesLayout = new QVBoxLayout( acrossGroupBox );
+    m_acrossClues = new CrosswordClueList( this );
+    m_acrossClues->setMinimumWidth(300);
+    acrossCluesLayout->addWidget( m_acrossClues );
+    acrossGroupBox->setLayout( acrossCluesLayout );
+
     QGroupBox* downGroupBox   = new QGroupBox( "Down",   cluesBox );
+    QVBoxLayout *downCluesLayout = new QVBoxLayout( downGroupBox );
+    m_downClues   = new CrosswordClueList( this );
+    m_downClues->setMinimumWidth(300);
+    downCluesLayout->addWidget( m_downClues );
+    downGroupBox->setLayout( downCluesLayout );
 
     cluesBoxLayout->addWidget( acrossGroupBox );
     cluesBoxLayout->addWidget( downGroupBox );
     cluesBox->setLayout( cluesBoxLayout );
 
-    m_acrossClues = new CrosswordClueList( acrossGroupBox );
-    m_downClues   = new CrosswordClueList( downGroupBox );
-
-    m_acrossClues->setMinimumWidth(300);
-    m_downClues->setMinimumWidth(300);
+    // Main layout
+    QHBoxLayout *mainLayout = new QHBoxLayout( this );
+    mainLayout->addWidget( m_puzzleGroupBox );
+    mainLayout->addWidget( cluesBox );
+    setLayout( mainLayout );
 
     connect( m_acrossClues, SIGNAL( clueSelected(AcrossLiteClue::Orientation, int) ),
              m_grid,        SLOT  ( setFocusCell(AcrossLiteClue::Orientation, int) ) );

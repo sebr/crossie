@@ -32,19 +32,14 @@ public:
 
     virtual QSize sizeHint() const;
     virtual QSizePolicy sizePolicy() const;
-    virtual void paintEvent( QPaintEvent* e );
-    virtual void paintNumber( QPainter& p );
-    virtual void paintFrame( QPainter& p );
-    virtual void paintLetter( QPainter& p );
-    virtual void paintBlock( QPainter& p );
 
 private:
     CrosswordCell();
 
     int  m_colLabel;
     int  m_rowLabel;
-    char m_solution;
-    char m_guess;
+    QChar m_solution;
+    QChar m_guess;
     bool m_isSolutionRevealed;
     bool m_showCorrectness;
     int  m_number;

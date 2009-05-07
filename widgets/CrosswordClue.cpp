@@ -1,20 +1,23 @@
 #include "CrosswordClue.h"
 
-CrosswordClue::CrosswordClue( const int n, QListBox* listbox, const QString& text ) : QListBoxText( listbox, "" )
+CrosswordClue::CrosswordClue( const int n, QListBox* listbox, const QString& text )
+    : QListBoxText( listbox, "" )
 {
     m_number = n;
 
     setText( QString::number( number() ) + QString( "." ) + text );
 }
 
-CrosswordClue::CrosswordClue( const int n, const QString& text ) : QListBoxText( "" )
+CrosswordClue::CrosswordClue( const int n, const QString& text )
+    : QListBoxText( "" )
 {
     m_number = n;
 
     setText( QString::number( number() ) + QString( "." ) + text );
 }
 
-CrosswordClue::CrosswordClue( const int n, QListBox* listbox, const QString& text, QListBoxItem* after ) : QListBoxText( listbox, "", after )
+CrosswordClue::CrosswordClue( const int n, QListBox* listbox, const QString& text, QListBoxItem* after )
+    : QListBoxText( listbox, "", after )
 {
     m_number = n;
 

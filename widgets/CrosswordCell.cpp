@@ -27,19 +27,56 @@ CrosswordCell::CrosswordCell()
     , m_isNumberShown( false )
     , m_isHilited( false )
 {
-    updateCell();
+    setFlags();
+    setTextAlignment( Qt::AlignCenter );
 }
 
 CrosswordCell::~CrosswordCell()
 {
 }
 
-void CrosswordCell::updateCell()
+QVariant CrosswordCell::data( int role ) const
 {
-    const bool isBlank = m_solution == '.';
+    switch( role )
+    {
+        case Qt::DisplayRole:
+        {
+            if( isBlank() )
+                return QString();
+            if( isSolutionRevealed() )
+                return m_solution;
+            return m_guess;
+        }
+        case Qt::ForegroundRole:
+        {
+            if( isBlank() )
+                return Qt::black;
+            if( isSolutionRevealed() )
+            {
+                if( isSolutionCorrect() )
+                    return Qt::green;
+                return Qt::red;
+            }
+            return Qt::black;
+        }
+        case Qt::BackgroundRole:
+        {
+            if( isBlank() )
+                return Qt::black;
+            return Qt::white;
+        }
+        default:
+            break;
+    }
+    return QTableWidgetItem::data( role );
+}
 
-    setBackgroundColor( isBlank ? Qt::black : Qt::white );
-    setFlags( isBlank ? Qt::NoItemFlags : Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled );
+void CrosswordCell::setFlags()
+{
+    if( isBlank() )
+        QTableWidgetItem::setFlags( Qt::NoItemFlags );
+    else
+        QTableWidgetItem::setFlags( Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled );
 }
 
 QSize CrosswordCell::sizeHint() const
@@ -55,7 +92,7 @@ QSizePolicy CrosswordCell::sizePolicy() const
 void CrosswordCell::setSolution( const QChar &letter )
 {
     m_solution = letter;
-    updateCell();
+    setFlags();
 }
 
 void CrosswordCell::setColRowLabel( const int col, const int row )
@@ -99,13 +136,8 @@ void CrosswordCell::revealSolution( const bool flag )
 {
     m_isSolutionRevealed = flag;
 
-    if ( flag == true )
+    if ( flag )
         setShowCorrectness( false );
-
-    if ( flag == false )
-        m_guess = ' ';
-    else
-        m_guess = m_solution;
 }
 
 bool CrosswordCell::isSolutionRevealed() const

@@ -49,7 +49,6 @@ public:
     void checkWord();
     void checkLetter();
 
-    CrosswordCell* cell( const int col, const int row );
     CrosswordCell* cell( const int number );
     void setFocusCell( const int col, const int row );
     void retreatFocusCell();

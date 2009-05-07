@@ -40,12 +40,15 @@ class CrosswordCell : public QTableWidgetItem
         bool isNumberShown() const;
         void hilite( const bool flag );
         bool isHilited() const;
+        bool isBlank() const { return m_solution == '.'; }
+
+        virtual QVariant data( int role ) const;
 
         virtual QSize sizeHint() const;
         virtual QSizePolicy sizePolicy() const;
 
     private:
-        void updateCell();
+        void setFlags();
 
         int  m_colLabel;
         int  m_rowLabel;

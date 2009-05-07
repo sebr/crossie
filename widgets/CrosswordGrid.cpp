@@ -21,9 +21,10 @@ CrosswordGrid::CrosswordGrid( QWidget* parent )
     , m_puzzle( 0 )
     , m_focusOrientation( FocusHorizontal )
 {
+    setSelectionMode( QAbstractItemView::SingleSelection );
+
     horizontalHeader()->hide();
     verticalHeader()->hide();
-//    setBackgroundColor( "white" );
 }
 
 CrosswordGrid::~CrosswordGrid()
@@ -309,24 +310,6 @@ bool CrosswordGrid::eventFilter( QObject* o, QEvent* e )
 //    return QWidget::eventFilter( o, e );    // standard event processing
 }
 
-CrosswordCell* CrosswordGrid::cell( const int col, const int row )
-{
-//    QObjectList*  l = queryList( "QWidget", "CrosswordCell" );
-//    QObjectListIt it( *l );
-//    QObject*      obj;
-//
-//    while (( obj = it.current() ) != 0 )
-//    {
-//        CrosswordCell* cell = ( CrosswordCell* )obj;
-//        if ( cell->colLabel() == col && cell->rowLabel() == row )
-//        {
-//            return cell;
-//        }
-//        ++it;
-//    }
-//
-//    return 0;
-}
 
 CrosswordCell* CrosswordGrid::cell( const int number )
 {
@@ -350,19 +333,17 @@ CrosswordCell* CrosswordGrid::cell( const int number )
 
 void CrosswordGrid::setFocusCell( const int col, const int row )
 {
-//    hiliteSolution( false );
-//
-//    CrosswordCell* c = cell( col, row );
-//    if ( c )
-//    {
-//        c->setFocus();
-//
-//        hiliteSolution( true );
-//
-//        emit colFocused( col );
-//        emit rowFocused( row );
-//        emit colRowFocused( col, row );
-//    }
+    hiliteSolution( false );
+
+    CrosswordCell* cell = dynamic_cast<CrosswordCell*>( item( col, row ) );
+    if ( cell )
+    {
+        hiliteSolution( true );
+
+        emit colFocused( col );
+        emit rowFocused( row );
+        emit colRowFocused( col, row );
+    }
 }
 
 void CrosswordGrid::setFocusCell( AcrossLiteClue::Orientation o, int number )
@@ -403,7 +384,7 @@ void CrosswordGrid::advanceFocusCell( const int count )
 //    {
 //        CrosswordCell* cx = cell( col, row + count );
 //        if ( cx == 0 ) return;
-//        if ( cx->solution() == '.' ) return;
+//        if ( cx->isBlank() ) return;
 //
 //        setFocusCell( col, row + count );
 //
@@ -412,7 +393,7 @@ void CrosswordGrid::advanceFocusCell( const int count )
 //    {
 //        CrosswordCell* cx = cell( col + count, row );
 //        if ( cx == 0 ) return;
-//        if ( cx->solution() == '.' ) return;
+//        if ( cx->isBlank() ) return;
 //
 //        setFocusCell( col + count, row );
 //    }
@@ -444,9 +425,9 @@ void CrosswordGrid::hiliteSolution( const bool flag )
         // Current to top.
         for ( int r = row; ; r-- )
         {
-            CrosswordCell* cx = cell( col, r );
-            if ( cx == 0 ) break;
-            if ( cx->solution() == '.' ) break;
+            CrosswordCell* cx = dynamic_cast<CrosswordCell*>( item( col, r ) );
+            if( !cx || cx->isBlank() )
+                break;
 
             cx->hilite( flag );
         }
@@ -454,9 +435,9 @@ void CrosswordGrid::hiliteSolution( const bool flag )
         // Current to bottom.
         for ( int r = row; ; r++ )
         {
-            CrosswordCell* cx = cell( col, r );
-            if ( cx == 0 ) break;
-            if ( cx->solution() == '.' ) break;
+            CrosswordCell* cx = dynamic_cast<CrosswordCell*>( item( col, r ) );
+            if( !cx || cx->isBlank() )
+                break;
 
             cx->hilite( flag );
         }
@@ -467,9 +448,9 @@ void CrosswordGrid::hiliteSolution( const bool flag )
         // Current to left.
         for ( int c = col; ; c-- )
         {
-            CrosswordCell* cx = cell( c, row );
-            if ( cx == 0 ) break;
-            if ( cx->solution() == '.' ) break;
+            CrosswordCell* cx = dynamic_cast<CrosswordCell*>( item( c, row ) );
+            if( !cx || cx->isBlank() )
+                break;
 
             cx->hilite( flag );
         }
@@ -477,9 +458,9 @@ void CrosswordGrid::hiliteSolution( const bool flag )
         // Current to right.
         for ( int c = col; ; c++ )
         {
-            CrosswordCell* cx = cell( c, row );
-            if ( cx == 0 ) break;
-            if ( cx->solution() == '.' ) break;
+            CrosswordCell* cx = dynamic_cast<CrosswordCell*>( item( c, row ) );
+            if( !cx || cx->isBlank() )
+                break;
 
             cx->hilite( flag );
         }
@@ -505,28 +486,28 @@ void CrosswordGrid::colRowToDownAcross( const int col, const int row,  int& down
 
     // Find nearest down solution number.
     int r = row;
-    CrosswordCell* downCell = cell( col, r );
+    CrosswordCell* downCell = dynamic_cast<CrosswordCell*>( item( col, r ) );
     while( downCell )
     {
-        if( downCell->solution() == '.' )
+        if( downCell->isBlank() )
             break;
 
         down = downCell->number();
 
-        downCell = cell( col, --r );
+        downCell = dynamic_cast<CrosswordCell*>( item( col, --r ) );
     }
 
     // Find nearest across solution number.
     int c = col;
-    CrosswordCell* acrossCell = cell( c, row );
+    CrosswordCell* acrossCell = dynamic_cast<CrosswordCell*>( item( c, row ) );
     while( acrossCell )
     {
-        if( acrossCell->solution() == '.' )
+        if( acrossCell->isBlank() )
             break;
 
         across = acrossCell->number();
 
-        acrossCell = cell( --c, row );
+        acrossCell = dynamic_cast<CrosswordCell*>( item( --c, row ) );
     }
 }
 

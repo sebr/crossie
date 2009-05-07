@@ -13,6 +13,8 @@
 
 #include "CrosswordCell.h"
 
+#include <QColor>
+
 CrosswordCell::CrosswordCell()
     : QTableWidgetItem()
     , m_colLabel( 0 )
@@ -25,10 +27,19 @@ CrosswordCell::CrosswordCell()
     , m_isNumberShown( false )
     , m_isHilited( false )
 {
+    updateCell();
 }
 
 CrosswordCell::~CrosswordCell()
 {
+}
+
+void CrosswordCell::updateCell()
+{
+    const bool isBlank = m_solution == '.';
+
+    setBackgroundColor( isBlank ? Qt::black : Qt::white );
+    setFlags( isBlank ? Qt::NoItemFlags : Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled );
 }
 
 QSize CrosswordCell::sizeHint() const
@@ -38,12 +49,13 @@ QSize CrosswordCell::sizeHint() const
 
 QSizePolicy CrosswordCell::sizePolicy() const
 {
-    return QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+    return QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 }
 
 void CrosswordCell::setSolution( const QChar &letter )
 {
     m_solution = letter;
+    updateCell();
 }
 
 void CrosswordCell::setColRowLabel( const int col, const int row )

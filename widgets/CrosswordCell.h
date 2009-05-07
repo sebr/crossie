@@ -45,6 +45,8 @@ class CrosswordCell : public QTableWidgetItem
         virtual QSizePolicy sizePolicy() const;
 
     private:
+        void updateCell();
+
         int  m_colLabel;
         int  m_rowLabel;
         QChar m_solution;

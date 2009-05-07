@@ -41,7 +41,7 @@ QSizePolicy CrosswordCell::sizePolicy() const
     return QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred, true );
 }
 
-void CrosswordCell::setSolution( const QChar letter )
+void CrosswordCell::setSolution( const QChar &letter )
 {
     m_solution = letter;
 }
@@ -62,7 +62,7 @@ int CrosswordCell::rowLabel() const
     return m_rowLabel;
 }
 
-void CrosswordCell::setGuess( const QChar letter )
+void CrosswordCell::setGuess( const QChar &letter )
 {
     setShowCorrectness( false );
 

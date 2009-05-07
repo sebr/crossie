@@ -39,8 +39,8 @@ public:
     bool            operator== ( const AcrossLiteClue& rhs );
     friend ostream& operator<< ( ostream& os, const AcrossLiteClue& rhs );
 
-    void set( const int number, const string& clue );
-    int  number() const;
+    void  set( const int number, const string& clue );
+    int   number() const;
     const string& clue() const;
 
 private:

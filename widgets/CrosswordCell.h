@@ -27,10 +27,10 @@ public:
     void setColRowLabel( const int col, const int row );
     int  colLabel() const;
     int  rowLabel() const;
-    void setSolution( const char letter );
-    void setGuess( const char letter );
-    char solution() const;
-    char guess() const;
+    void setSolution( const QChar &letter );
+    void setGuess( const QChar &letter );
+    QChar solution() const;
+    QChar guess() const;
     void revealSolution( const bool flag );
     bool isSolutionRevealed() const;
     void setShowCorrectness( const bool flag );

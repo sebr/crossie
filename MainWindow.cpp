@@ -1,3 +1,12 @@
+/***************************************************************************
+ *   Copyright (C) 2009 by Seb Ruiz <ruiz@kde.org>                         *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #include "MainWindow.h"
 
@@ -9,23 +18,23 @@ MainWindow::MainWindow( QWidget *parent )
     setCentralWidget( m_crossword );
 
     QMenu *fileMenu = menuBar()->addMenu( tr( "&File" ) );
-    fileMenu->insertItem( "&Open...", this, SLOT( launchOpenDialog() ), QKeySequence::Open );
-    fileMenu->insertItem( "&Save...", this, SLOT( launchSaveDialog() ), QKeySequence::Save );
-    fileMenu->insertItem( "&Quit", qApp, SLOT( quit() ) );
+    fileMenu->insertAction( "&Open...", this, SLOT( launchOpenDialog() ), QKeySequence::Open );
+    fileMenu->insertAction( "&Save...", this, SLOT( launchSaveDialog() ), QKeySequence::Save );
+    fileMenu->insertAction( "&Quit",    qApp, SLOT( quit() ) );
 
     QMenu *viewMenu = menuBar()->addMenu( tr( "&View" ) );
-    viewMenu->insertItem( QPixmap( solution_xpm ),       "Reveal Puzzle",   this, SLOT( revealSolution() ) );
-    viewMenu->insertItem( QPixmap( word_xpm ),           "Reveal Word",     this, SLOT( revealWord() ) );
-    viewMenu->insertItem( QPixmap( letter_xpm ),         "Reveal Letter",   this, SLOT( revealLetter() ) );
-    viewMenu->insertSeparator();
-    viewMenu->insertItem( QPixmap( check_solution_xpm ), "Check Puzzle",    this, SLOT( checkSolution() ) );
-    viewMenu->insertItem( QPixmap( check_word_xpm ),     "Check Word",      this, SLOT( checkWord() ) );
-    viewMenu->insertItem( QPixmap( check_letter_xpm ),   "Check Letter",    this, SLOT( checkLetter() ) );
-    viewMenu->insertSeparator();
-    viewMenu->insertItem( "Clear",           this, SLOT( clearSolution() ) );
+    viewMenu->insertAction( "Reveal Puzzle", this, SLOT( revealSolution() ) );
+    viewMenu->insertAction( "Reveal Word",   this, SLOT( revealWord() ) );
+    viewMenu->insertAction( "Reveal Letter", this, SLOT( revealLetter() ) );
+    viewMenu->addSeparator();
+    viewMenu->insertAction( "Check Puzzle",  this, SLOT( checkSolution() ) );
+    viewMenu->insertAction( "Check Word",    this, SLOT( checkWord() ) );
+    viewMenu->insertAction( "Check Letter",  this, SLOT( checkLetter() ) );
+    viewMenu->addSeparator();
+    viewMenu->insertAction( "Clear",         this, SLOT( clearSolution() ) );
 
     QMenu *helpMenu = menuBar()->addMenu( tr( "&Help" ) );
-    helpMenu->insertItem( "About...",                                     this, SLOT( launchAboutDialog() ) );
+    helpMenu->insertAction( "About...",      this, SLOT( launchAboutDialog() ) );
 
 //    toolBar()->setLabel( "Puzzle Operations" );
 
@@ -75,18 +84,14 @@ void MainWindow::launchSaveDialog()
 
 void MainWindow::setPuzzle( const QString& filename )
 {
-    if ( !filename.isNull() )
-    {
+    if( !filename.isNull() )
         m_crossword->setPuzzle( filename );
-    }
 }
 
 void MainWindow::savePuzzle( const QString& filename )
 {
-    if ( !filename.isNull() )
-    {
+    if( !filename.isNull() )
         m_crossword->savePuzzle( filename );
-    }
 }
 
 void MainWindow::revealSolution()

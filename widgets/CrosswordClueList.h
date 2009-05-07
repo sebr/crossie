@@ -16,6 +16,12 @@
 
 #include <QWidget>
 
+/**
+  * A widget which holds a list of clues for the crossword puzzle
+  * Typically there are two CrosswordClueList widgets:
+  *   - across clues
+  *   - down clues
+  */
 class CrosswordClueList : public QWidget
 {
     Q_OBJECT

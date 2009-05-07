@@ -13,24 +13,13 @@
 
 #include "CrosswordGrid.h"
 
-CrosswordGrid::CrosswordGrid( QWidget* parent, char* name ) : QWidget( parent, name )
+CrosswordGrid::CrosswordGrid( QWidget* parent )
+    : QWidget( parent, name )
+    , m_gridLayout( 0 )
+    , m_puzzle( 0 )
+    , m_focusOrientation( FocusHorizontal )
 {
-    m_gridLayout       = 0;
-    m_puzzle           = 0;
-    m_focusOrientation = FocusHorizontal;
-
     setBackgroundColor( "white" );
-}
-
-CrosswordGrid::CrosswordGrid( AcrossLitePuzzleBase* puzzle, QWidget* parent, char* name ) : QWidget( parent, name )
-{
-    m_gridLayout       = 0;
-    m_puzzle           = 0;
-    m_focusOrientation = FocusHorizontal;
-
-    setBackgroundColor( "white" );
-
-    setPuzzle( puzzle );
 }
 
 CrosswordGrid::~CrosswordGrid()
@@ -39,13 +28,13 @@ CrosswordGrid::~CrosswordGrid()
 
 void CrosswordGrid::setPuzzle( AcrossLitePuzzleBase* puzzle )
 {
-    if ( _gridLayout )
+    if ( m_gridLayout )
     {
         delete m_gridLayout;
         m_gridLayout = 0;
     }
 
-    while ( _cells.size() > 0 )
+    while ( m_cells.size() > 0 )
     {
         CrosswordCell* w = m_cells.back();
         delete w;
@@ -56,17 +45,17 @@ void CrosswordGrid::setPuzzle( AcrossLitePuzzleBase* puzzle )
     m_puzzle           = puzzle;
     m_focusOrientation = FocusHorizontal;
 
-    for ( int r = 0; r < _puzzle->nRows(); r++ )
+    for ( int r = 0; r < m_puzzle->nRows(); r++ )
     {
-        for ( int c = 0; c < _puzzle->nColumns(); c++ )
+        for ( int c = 0; c < m_puzzle->nColumns(); c++ )
         {
             CrosswordCell* w = new CrosswordCell( this );
             w->setColRowLabel( c, r );
-            w->setSolution( _puzzle->solutionCell( c, r ) );
+            w->setSolution( m_puzzle->solutionCell( c, r ) );
             w->setShowCorrectness( false );
             // w->setGuess(' ');
-            w->setGuess( _puzzle->diagramCell( c, r ) );
-            w->setNumber( _puzzle->cellNumber( c, r ) );
+            w->setGuess( m_puzzle->diagramCell( c, r ) );
+            w->setNumber( m_puzzle->cellNumber( c, r ) );
             w->showNumber( true );
             w->setFocusPolicy( QWidget::ClickFocus );
             w->show();
@@ -89,7 +78,7 @@ AcrossLitePuzzleBase* CrosswordGrid::puzzle()
 
 void CrosswordGrid::savePuzzle( const QString& filename )
 {
-    if ( _puzzle == 0 ) return;
+    if ( m_puzzle == 0 ) return;
 
     QString f = filename;
 
@@ -104,7 +93,7 @@ void CrosswordGrid::savePuzzle( const QString& filename )
 
     if ( sub != QString( ".puz" ) )
     {
-        QMessageBox::warning( this, "KrossWordPlayer", "Trying to save to a file with a '" + sub + "' extension\nwhen it should be a '.puz' extension." );
+        QMessageBox::warning( this, "Crossie", "Trying to save to a file with a '" + sub + "' extension\nwhen it should be a '.puz' extension." );
         return;
     }
 

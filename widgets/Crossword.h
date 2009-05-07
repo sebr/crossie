@@ -14,6 +14,9 @@
 #ifndef CROSSWORD_H
 #define CROSSWORD_H
 
+#include "acrosslite/AcrossLitePuzzle.h"
+
+#include <QGroupBox>
 #include <QWidget>
 
 class Crossword : public QWidget
@@ -21,7 +24,7 @@ class Crossword : public QWidget
     Q_OBJECT
 
 public:
-    Crossword( QWidget* parent, char* name = 0 );
+    Crossword( QWidget* parent );
     ~Crossword();
 
     void setPuzzle( const QString& filename );
@@ -39,11 +42,11 @@ public slots:
     void handleNewColRowFocused( int newCol, int newRow );
 
 private:
-    AcrossLitePuzzleBase* m_puzzle;
-    QHGroupBox*           m_puzzleGroupBox;
-    CrosswordGrid*        m_grid;
-    CrosswordClueList*    m_acrossClues;
-    CrosswordClueList*    m_downClues;
+    AcrossLitePuzzle  *m_puzzle;
+    QGroupBox         *m_puzzleGroupBox;
+    CrosswordGrid     *m_grid;
+    CrosswordClueList *m_acrossClues;
+    CrosswordClueList *m_downClues;
 };
 
 

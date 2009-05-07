@@ -13,15 +13,17 @@
 
 #include "CrosswordClueList.h"
 
-CrosswordClueList::CrosswordClueList( QWidget* parent, char* name ) : QListBox( parent, name )
+CrosswordClueList::CrosswordClueList( QWidget* parent, char* name )
+    : QListBox( parent, name )
 {
     m_puzzle   = 0;
     m_clueList = AcrossLiteClue::Unknown;
 
-    QObject::connect( this, SIGNAL( pressed( QListBoxItem* ) ), this, SLOT( _selected( QListBoxItem* ) ) );
+    QObject::connect( this, SIGNAL( pressed( QListBoxItem* ) ), this, SLOT( m_selected( QListBoxItem* ) ) );
 }
 
-CrosswordClueList::CrosswordClueList( AcrossLitePuzzleBase* puzzle, AcrossLiteClue::Orientation clueList, QWidget* parent, char* name ) : QListBox( parent, name )
+CrosswordClueList::CrosswordClueList( AcrossLitePuzzleBase* puzzle, AcrossLiteClue::Orientation clueList, QWidget* parent )
+    : QListBox( parent )
 {
     m_puzzle   = 0;
     m_clueList = AcrossLiteClue::Unknown;
@@ -40,7 +42,7 @@ void CrosswordClueList::setPuzzle( AcrossLitePuzzleBase* puzzle, AcrossLiteClue:
 
     clear();
 
-    if ( _clueList == AcrossLiteClue::Across )
+    if ( m_clueList == AcrossLiteClue::Across )
     {
         AcrossLiteClues::const_iterator b = m_puzzle->beginAcrossClue();
         AcrossLiteClues::const_iterator e = m_puzzle->endAcrossClue();
@@ -53,7 +55,7 @@ void CrosswordClueList::setPuzzle( AcrossLitePuzzleBase* puzzle, AcrossLiteClue:
         }
 
     }
-    else if ( _clueList == AcrossLiteClue::Down )
+    else if ( m_clueList == AcrossLiteClue::Down )
     {
         AcrossLiteClues::const_iterator b = m_puzzle->beginDownClue();
         AcrossLiteClues::const_iterator e = m_puzzle->endDownClue();

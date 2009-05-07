@@ -29,8 +29,7 @@ public:
         FocusVertical   = 2
     };
 
-    CrosswordGrid( QWidget* parent, char* name = 0 );
-    CrosswordGrid( AcrossLitePuzzleBase* puzzle, QWidget* parent, char* name = 0 );
+    CrosswordGrid( QWidget* parent );
     ~CrosswordGrid();
 
     void setPuzzle( AcrossLitePuzzleBase* puzzle );

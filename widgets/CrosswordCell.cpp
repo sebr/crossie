@@ -60,6 +60,8 @@ QVariant CrosswordCell::data( int role ) const
         {
             if( isBlank() )
                 return Qt::black;
+            if( isHilited() )
+                return Qt::yellow;
             return Qt::white;
         }
         default:

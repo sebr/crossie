@@ -71,6 +71,7 @@ signals:
 
 private:
     CrosswordCell *getCell( const int row, const int col ) const;
+    QList<CrosswordCell*> getCells() const;
 
     AcrossLitePuzzle*     m_puzzle;
     FocusOrientation      m_focusOrientation;

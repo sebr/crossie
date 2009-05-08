@@ -13,6 +13,7 @@
 
 #include "CrosswordGrid.h"
 
+#include <QDebug>
 #include <QHeaderView>
 #include <QMouseEvent>
 
@@ -35,7 +36,26 @@ CrosswordGrid::~CrosswordGrid()
 
 CrosswordCell *CrosswordGrid::getCell( const int row, const int col ) const
 {
+    // Check bounds conditions
+    if( row >= rowCount() || col >= columnCount() || row < 0 || col < 0 )
+        return 0;
+
     return dynamic_cast<CrosswordCell*>( item( row, col ) );
+}
+
+QList<CrosswordCell*> CrosswordGrid::getCells() const
+{
+    QList<CrosswordCell*> cells;
+    for( int row = 0; row < rowCount(); row++ )
+    {
+        for( int col = 0; col < columnCount(); col++ )
+        {
+            CrosswordCell *cell = getCell( row, col );
+            if( cell )
+                cells << cell;
+        }
+    }
+    return cells;
 }
 
 void CrosswordGrid::setPuzzle( AcrossLitePuzzle* puzzle )
@@ -84,73 +104,44 @@ void CrosswordGrid::savePuzzle( const QString& filename )
 
 void CrosswordGrid::revealSolution( const bool flag )
 {
-    for( int row = 0; row < rowCount(); row++ )
-    {
-        for( int col = 0; col < columnCount(); col++ )
-        {
-            CrosswordCell *cell = getCell( row, col );
-            if( cell )
-                cell->revealSolution( flag );
-        }
-    }
+    foreach( CrosswordCell *cell, getCells() )
+        cell->revealSolution( flag );
 }
 
 void CrosswordGrid::revealWord( const bool flag )
 {
-    for( int row = 0; row < rowCount(); row++ )
+    foreach( CrosswordCell *cell, getCells() )
     {
-        for( int col = 0; col < columnCount(); col++ )
-        {
-            CrosswordCell *cell = getCell( row, col );
-            if( cell && cell->isHilited() )
-                cell->revealSolution( flag );
-        }
+        if( cell->isHilited() )
+            cell->revealSolution( flag );
     }
 }
 
 void CrosswordGrid::revealLetter( const bool flag )
 {
     CrosswordCell* cell = dynamic_cast<CrosswordCell*>( currentItem() );
-    if ( cell && cell->isHilited() )
+    if( cell->isHilited() )
         cell->revealSolution( flag );
 }
 
 void CrosswordGrid::uncheckSolution()
 {
-    for( int row = 0; row < rowCount(); row++ )
-    {
-        for( int col = 0; col < columnCount(); col++ )
-        {
-            CrosswordCell *cell = getCell( row, col );
-            if( cell )
-                cell->setShowCorrectness( false );
-        }
-    }
+    foreach( CrosswordCell *cell, getCells() )
+        cell->setShowCorrectness( false );
 }
 
 void CrosswordGrid::checkSolution()
 {
-    for( int row = 0; row < rowCount(); row++ )
-    {
-        for( int col = 0; col < columnCount(); col++ )
-        {
-            CrosswordCell *cell = getCell( row, col );
-            if( cell )
-                cell->setShowCorrectness( true );
-        }
-    }
+    foreach( CrosswordCell *cell, getCells() )
+        cell->setShowCorrectness( true );
 }
 
 void CrosswordGrid::checkWord()
 {
-    for( int row = 0; row < rowCount(); row++ )
+    foreach( CrosswordCell *cell, getCells() )
     {
-        for( int col = 0; col < columnCount(); col++ )
-        {
-            CrosswordCell *cell = getCell( row, col );
-            if( cell && cell->isHilited() )
-                cell->setShowCorrectness( true );
-        }
+        if( cell->isHilited() )
+            cell->setShowCorrectness( true );
     }
 }
 
@@ -242,15 +233,8 @@ void CrosswordGrid::hiliteSolution( const bool flag )
 
 void CrosswordGrid::hiliteFullSolution( const bool flag )
 {
-       for( int row = 0; row < rowCount(); row++ )
-    {
-        for( int col = 0; col < columnCount(); col++ )
-        {
-            CrosswordCell *cell = getCell( row, col );
-            if( cell )
-                cell->hilite( flag );
-        }
-    }
+    foreach( CrosswordCell *cell, getCells() )
+        cell->hilite( flag );
 }
 
 void CrosswordGrid::colRowToDownAcross( const int col, const int row,  int& down, int& across )
@@ -314,4 +298,28 @@ void CrosswordGrid::keyPressEvent( QKeyEvent *event )
 
 void CrosswordGrid::selectClue( AcrossLiteClue::Orientation orientation, int clueNumber )
 {
+    qDebug() << "Highlighting" << (orientation == AcrossLiteClue::Across ? "across" : "down")<< "clue" << clueNumber;
+    CrosswordCell *target = 0;
+    foreach( CrosswordCell *cell, getCells() )
+    {
+        if( !target && cell->number() == clueNumber )
+            target = cell;
+        cell->hilite(false);
+    }
+
+    clearSelection();
+    if( target )
+        target->setSelected(true);
+
+    while( target )
+    {
+        if( target->isBlank() )
+            break;
+
+        target->hilite(true);
+        if( orientation == AcrossLiteClue::Across )
+            target = getCell( target->row(), target->column() + 1 );
+        else
+            target = getCell( target->row() + 1, target->column() );
+    }
 }

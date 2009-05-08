@@ -40,7 +40,7 @@ Crossword::Crossword( QWidget* parent )
     acrossCluesLayout->addWidget( m_acrossClues );
     acrossGroupBox->setLayout( acrossCluesLayout );
 
-    QGroupBox* downGroupBox   = new QGroupBox( "Down",   cluesBox );
+    QGroupBox* downGroupBox   = new QGroupBox( "Down", cluesBox );
     QVBoxLayout *downCluesLayout = new QVBoxLayout( downGroupBox );
     m_downClues   = new CrosswordClueList( this );
     m_downClues->setMinimumWidth(300);

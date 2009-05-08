@@ -74,6 +74,12 @@ class AcrossLitePuzzle
         string _readString( int fh );
         void   _writeString( int fh, const string& text );
 
+        bool isBlankSquare( const int row, const int col ) const;
+        bool isClueNumber( const int row, const int col ) const;
+        bool isAcrossClueNumber( const int row, const int col ) const;
+        bool isDownClueNumber( const int row, const int col ) const;
+
+
         AcrossLiteGrid  _diagram;
         AcrossLiteGrid  _solution;
         AcrossLiteGrid  _numbers;

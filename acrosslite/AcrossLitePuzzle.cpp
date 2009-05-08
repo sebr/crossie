@@ -145,32 +145,24 @@ void AcrossLitePuzzle::load( const string& filename )
     //
     int fh = ::open( filename.c_str(), O_RDONLY );
     if ( fh < 0 )
-    {
         return;
-    }
 
     //
     // Read the header.
     //
     int stat = ::read( fh, &_header, sizeof( AcrossLitePuzHeader ) );
     if ( stat != sizeof( AcrossLitePuzHeader ) )
-    {
         return;
-    }
 
     _solution.resize( _header._nColumns, _header._nRows );
     _diagram.resize( _header._nColumns, _header._nRows );
     _numbers.resize( _header._nColumns, _header._nRows );
 
     if ( nColumns() < 1 || nColumns() > 25 )
-    {
         return;
-    }
 
     if ( nRows() < 1 || nRows() > 25 )
-    {
         return;
-    }
 
     //
     // Read the the Solution and populate the Solution grid.
@@ -182,9 +174,7 @@ void AcrossLitePuzzle::load( const string& filename )
             char letter;
             stat = ::read( fh, &letter, 1 );
             if ( stat != 1 )
-            {
                 return;
-            }
 
             _solution.setCell( c, r, letter );
         }
@@ -200,9 +190,7 @@ void AcrossLitePuzzle::load( const string& filename )
             char letter;
             stat = ::read( fh, &letter, 1 );
             if ( stat != 1 )
-            {
                 return;
-            }
 
             if ( letter == '-' ) letter = ' ';
 
@@ -229,35 +217,28 @@ void AcrossLitePuzzle::load( const string& filename )
     {
         for ( int c = 0; c < nColumns(); c++ )
         {
+            if( isBlankSquare( r, c ) )
+                continue;
+
             int number = cellNumber( c, r );
-            if ( number == 0 ) continue;
+            if( number == 0 )
+                continue;
 
-            // Try an 'across'
-            if ( c == 0 || diagramCell( c - 1, r ) == '.' )
+            const bool isAcrossClue = isAcrossClueNumber(r, c);
+            const bool isDownClue = isDownClueNumber(r, c);
+
+            if( isAcrossClue || isDownClue )
             {
                 string clueText = _readString( fh );
                 if ( clueText.size() == 0 )
-                {
                     cout << "Unexepected EOF while reading clues." << endl;
-                    continue;
-                }
 
-                AcrossLiteClue c( number, clueText );
-                _acrossClues.push_back( c );
-            }
+                AcrossLiteClue clue( number, clueText );
 
-            // Try a 'down'
-            if ( r == 0 || diagramCell( c, r - 1 ) == '.' )
-            {
-                string clueText = _readString( fh );
-                if ( clueText.size() == 0 )
-                {
-                    cout << "Unexepected EOF while reading clues." << endl;
-                    continue;
-                }
-
-                AcrossLiteClue c( number, clueText );
-                _downClues.push_back( c );
+                if( isAcrossClue )
+                    _acrossClues.push_back( clue );
+                else
+                    _downClues.push_back( clue );
             }
         }
     }
@@ -266,15 +247,10 @@ void AcrossLitePuzzle::load( const string& filename )
     // Close the file.
     //
     stat = ::close( fh );
-    if ( stat < 0 )
-    {
-        return;
-    }
 }
 
 void AcrossLitePuzzle::save( const string& filename )
 {
-
     // Create the file.
     int fh = ::creat( filename.c_str(), 0666 );
     if ( fh < 0 )
@@ -406,29 +382,46 @@ void AcrossLitePuzzle::_calculateCellNumbers()
     {
         for ( int c = 0; c < nColumns(); c++ )
         {
-            if ( diagramCell( c, r ) == '.' ) continue;
+            if( isBlankSquare( r, c ) )
+                continue;
 
-            if ( r == 0 || c == 0 )
-            {
+            if( isClueNumber( r, c ) )
                 _numbers.setCell( c, r, number++ );
-
-            }
-            else if ( diagramCell( c, r - 1 ) == '.' )
-            {
-                _numbers.setCell( c, r, number++ );
-
-            }
-            else if ( diagramCell( c - 1, r ) == '.' )
-            {
-                _numbers.setCell( c, r, number++ );
-
-            }
             else
-            {
                 _numbers.setCell( c, r, 0 );
-            }
         }
+        cout << endl;
     }
+}
+
+bool AcrossLitePuzzle::isBlankSquare( const int row, const int col ) const
+{
+    if( row < 0 || row >= _diagram.nRows() || col < 0 || col >= _diagram.nColumns() )
+        return true;
+
+    return diagramCell( col, row ) == '.';
+}
+
+bool AcrossLitePuzzle::isClueNumber( const int row, const int col ) const
+{
+    if( isBlankSquare(row, col) )
+        return false;
+
+    return isAcrossClueNumber(row, col) || isDownClueNumber(row, col);
+}
+
+bool AcrossLitePuzzle::isAcrossClueNumber( const int row, const int col ) const
+{
+    if( isBlankSquare(row, col - 1) && !isBlankSquare(row, col + 1) )
+        return true;
+    return false;
+}
+
+bool AcrossLitePuzzle::isDownClueNumber( const int row, const int col ) const
+{
+    if( isBlankSquare(row - 1, col) && !isBlankSquare(row + 1, col) )
+        return true;
+    return false;
 }
 
 string AcrossLitePuzzle::_readString( int fh )

@@ -140,10 +140,7 @@ void Crossword::handleNewColRowFocused( int currentRow, int currentColumn, int p
 
     qDebug() << "selected across:" << across << "; down:" << down;
 
-    if( down > 0 )
-        m_downClues->clueSelected( down );
-
-    if( across > 0 )
-        m_acrossClues->clueSelected( across );
+    m_downClues->clueSelected( down );
+    m_acrossClues->clueSelected( across );
 }
 

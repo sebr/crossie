@@ -255,11 +255,11 @@ void CrosswordGrid::hiliteFullSolution( const bool flag )
 
 void CrosswordGrid::colRowToDownAcross( const int col, const int row,  int& down, int& across )
 {
-    down = across = -1;
+    down = across = 0;
 
     // Find nearest down solution number.
     int r = row;
-    CrosswordCell* downCell = getCell( col, r );
+    CrosswordCell* downCell = getCell( r, col );
     while( downCell )
     {
         if( downCell->isBlank() )
@@ -267,12 +267,12 @@ void CrosswordGrid::colRowToDownAcross( const int col, const int row,  int& down
 
         down = downCell->number();
 
-        downCell = getCell( col, --r );
+        downCell = getCell( --r, col );
     }
 
     // Find nearest across solution number.
     int c = col;
-    CrosswordCell* acrossCell = getCell( c, row );
+    CrosswordCell* acrossCell = getCell( row, c );
     while( acrossCell )
     {
         if( acrossCell->isBlank() )
@@ -280,7 +280,7 @@ void CrosswordGrid::colRowToDownAcross( const int col, const int row,  int& down
 
         across = acrossCell->number();
 
-        acrossCell = getCell( --c, row );
+        acrossCell = getCell( row, --c );
     }
 }
 

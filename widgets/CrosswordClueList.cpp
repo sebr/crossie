@@ -76,6 +76,9 @@ AcrossLiteClue::Orientation CrosswordClueList::clueList()
 void CrosswordClueList::clueSelected( int n )
 {
     clearSelection();
+    if( n <= 0 )
+        return;
+
     for( int i = 0; i < count(); i++ )
     {
         CrosswordClue* clue = static_cast<CrosswordClue*>( item( i ) );

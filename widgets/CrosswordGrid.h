@@ -64,12 +64,15 @@ public:
     virtual QSize minimumSizeHint() const;
     virtual QSize sizeHint() const;
     virtual QSizePolicy sizePolicy() const;
-    virtual void  keyPressEvent( QKeyEvent*   e );
-    virtual void  mousePressEvent( QMouseEvent* e );
+    virtual void  keyPressEvent( QKeyEvent* e );
+//    virtual void  mousePressEvent( QMouseEvent* e );
     virtual bool  eventFilter( QObject* o, QEvent *e );
 
 public slots:
     void setFocusCell( AcrossLiteClue::Orientation o, int number );
+
+private slots:
+    void currentCellChanged( QTableWidgetItem *current, QTableWidgetItem *previous );
 
 signals:
     void rowFocused( int row );
@@ -77,7 +80,7 @@ signals:
     void colRowFocused( int col, int row );
 
 private:
-    CrosswordGrid();
+    CrosswordCell *getCell( const int row, const int col ) const;
 
     AcrossLitePuzzle*     m_puzzle;
     FocusOrientation      m_focusOrientation;

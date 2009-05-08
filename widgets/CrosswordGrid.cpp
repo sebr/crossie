@@ -13,6 +13,7 @@
 
 #include "CrosswordGrid.h"
 
+#include <QDebug>
 #include <QHeaderView>
 #include <QMouseEvent>
 
@@ -21,14 +22,32 @@ CrosswordGrid::CrosswordGrid( QWidget* parent )
     , m_puzzle( 0 )
     , m_focusOrientation( FocusHorizontal )
 {
+    setEditTriggers( QAbstractItemView::NoEditTriggers );
     setSelectionMode( QAbstractItemView::SingleSelection );
+    setSortingEnabled( false );
 
     horizontalHeader()->hide();
     verticalHeader()->hide();
+
+    connect( this, SIGNAL( currentItemChanged(QTableWidgetItem*, QTableWidgetItem*) ),
+             this, SLOT  ( currentCellChanged(QTableWidgetItem*, QTableWidgetItem*) ) );
 }
 
 CrosswordGrid::~CrosswordGrid()
 {
+}
+
+CrosswordCell *CrosswordGrid::getCell( const int row, const int col ) const
+{
+    return dynamic_cast<CrosswordCell*>( item( row, col ) );
+}
+
+void CrosswordGrid::currentCellChanged( QTableWidgetItem *current, QTableWidgetItem *previous )
+{
+    Q_UNUSED( previous )
+    CrosswordCell *cell = dynamic_cast<CrosswordCell*>( current );
+    if( cell && !cell->isBlank() && !cell->isSolutionRevealed() )
+        editItem( current );
 }
 
 void CrosswordGrid::setPuzzle( AcrossLitePuzzle* puzzle )
@@ -38,6 +57,9 @@ void CrosswordGrid::setPuzzle( AcrossLitePuzzle* puzzle )
 
     setColumnCount( m_puzzle->nColumns() );
     setRowCount( m_puzzle->nRows() );
+
+    int colWidth  = 20;
+    int rowHeight = 20;
 
     for( int row = 0; row < rowCount(); row++ )
     {
@@ -50,10 +72,17 @@ void CrosswordGrid::setPuzzle( AcrossLitePuzzle* puzzle )
             cell->setGuess( m_puzzle->diagramCell( col, row ) );
             cell->setNumber( m_puzzle->cellNumber( col, row ) );
             cell->showNumber( true );
+            colWidth  = cell->sizeHint().width();
+            rowHeight = cell->sizeHint().height();
 
             setItem( row, col, cell );
         }
     }
+    qDebug() << "colWidth:" << colWidth << " rowHeight: " << rowHeight;
+    for( int col = 0; col < columnCount(); col++ )
+        setColumnWidth( col, colWidth );
+    for( int row = 0; row < rowCount(); row++ )
+        setColumnWidth( row, rowHeight );
 }
 
 AcrossLitePuzzle* CrosswordGrid::puzzle()
@@ -72,7 +101,7 @@ void CrosswordGrid::revealSolution( const bool flag )
     {
         for( int col = 0; col < columnCount(); col++ )
         {
-            CrosswordCell *cell = dynamic_cast<CrosswordCell*>( item( row, col ) );
+            CrosswordCell *cell = getCell( row, col );
             if( cell )
                 cell->revealSolution( flag );
         }
@@ -85,7 +114,7 @@ void CrosswordGrid::revealWord( const bool flag )
     {
         for( int col = 0; col < columnCount(); col++ )
         {
-            CrosswordCell *cell = dynamic_cast<CrosswordCell*>( item( row, col ) );
+            CrosswordCell *cell = getCell( row, col );
             if( cell && cell->isHilited() )
                 cell->revealSolution( flag );
         }
@@ -105,7 +134,7 @@ void CrosswordGrid::uncheckSolution()
     {
         for( int col = 0; col < columnCount(); col++ )
         {
-            CrosswordCell *cell = dynamic_cast<CrosswordCell*>( item( row, col ) );
+            CrosswordCell *cell = getCell( row, col );
             if( cell )
                 cell->setShowCorrectness( false );
         }
@@ -118,7 +147,7 @@ void CrosswordGrid::checkSolution()
     {
         for( int col = 0; col < columnCount(); col++ )
         {
-            CrosswordCell *cell = dynamic_cast<CrosswordCell*>( item( row, col ) );
+            CrosswordCell *cell = getCell( row, col );
             if( cell )
                 cell->setShowCorrectness( true );
         }
@@ -131,7 +160,7 @@ void CrosswordGrid::checkWord()
     {
         for( int col = 0; col < columnCount(); col++ )
         {
-            CrosswordCell *cell = dynamic_cast<CrosswordCell*>( item( row, col ) );
+            CrosswordCell *cell = getCell( row, col );
             if( cell && cell->isHilited() )
                 cell->setShowCorrectness( true );
         }
@@ -160,8 +189,8 @@ QSize CrosswordGrid::minimumSizeHint() const
     return QSize( 20, 20 );
 }
 
-void CrosswordGrid::keyPressEvent( QKeyEvent* e )
-{
+//void CrosswordGrid::keyPressEvent( QKeyEvent* e )
+//{
 //    QString letter = e->text().upper();
 //
 //    // cout << "Grid - Key pressed: " << letter.ascii() << endl;
@@ -238,22 +267,24 @@ void CrosswordGrid::keyPressEvent( QKeyEvent* e )
 //            advanceFocusCell( -1 );
 //        }
 //    }
-}
+//}
 
-void CrosswordGrid::mousePressEvent( QMouseEvent* e )
-{
-    hiliteFullSolution( false );
-
-    if ( e->button() == Qt::RightButton )
-    {
-        if ( focusOrientation() == CrosswordGrid::FocusHorizontal )
-            setFocusOrientation( CrosswordGrid::FocusVertical );
-        else if ( focusOrientation() == CrosswordGrid::FocusVertical )
-            setFocusOrientation( CrosswordGrid::FocusHorizontal );
-    }
-
-    hiliteSolution( true );
-}
+//void CrosswordGrid::mousePressEvent( QMouseEvent* e )
+//{
+//    hiliteFullSolution( false );
+//
+//    if ( e->button() == Qt::RightButton )
+//    {
+//        if ( focusOrientation() == CrosswordGrid::FocusHorizontal )
+//            setFocusOrientation( CrosswordGrid::FocusVertical );
+//        else if ( focusOrientation() == CrosswordGrid::FocusVertical )
+//            setFocusOrientation( CrosswordGrid::FocusHorizontal );
+//    }
+//
+//    hiliteSolution( true );
+//
+//    QTableWidgetItem::mousePressEvent( e );
+//}
 
 bool CrosswordGrid::eventFilter( QObject* o, QEvent* e )
 {
@@ -307,7 +338,7 @@ bool CrosswordGrid::eventFilter( QObject* o, QEvent* e )
 //        }
 //    }
 //
-//    return QWidget::eventFilter( o, e );    // standard event processing
+    return QWidget::eventFilter( o, e );    // standard event processing
 }
 
 
@@ -425,7 +456,7 @@ void CrosswordGrid::hiliteSolution( const bool flag )
         // Current to top.
         for ( int r = row; ; r-- )
         {
-            CrosswordCell* cx = dynamic_cast<CrosswordCell*>( item( col, r ) );
+            CrosswordCell* cx = getCell( col, r );
             if( !cx || cx->isBlank() )
                 break;
 
@@ -435,7 +466,7 @@ void CrosswordGrid::hiliteSolution( const bool flag )
         // Current to bottom.
         for ( int r = row; ; r++ )
         {
-            CrosswordCell* cx = dynamic_cast<CrosswordCell*>( item( col, r ) );
+            CrosswordCell* cx = getCell( col, r );
             if( !cx || cx->isBlank() )
                 break;
 
@@ -448,7 +479,7 @@ void CrosswordGrid::hiliteSolution( const bool flag )
         // Current to left.
         for ( int c = col; ; c-- )
         {
-            CrosswordCell* cx = dynamic_cast<CrosswordCell*>( item( c, row ) );
+            CrosswordCell* cx = getCell( c, row );
             if( !cx || cx->isBlank() )
                 break;
 
@@ -458,7 +489,7 @@ void CrosswordGrid::hiliteSolution( const bool flag )
         // Current to right.
         for ( int c = col; ; c++ )
         {
-            CrosswordCell* cx = dynamic_cast<CrosswordCell*>( item( c, row ) );
+            CrosswordCell* cx = getCell( c, row );
             if( !cx || cx->isBlank() )
                 break;
 
@@ -473,7 +504,7 @@ void CrosswordGrid::hiliteFullSolution( const bool flag )
     {
         for( int col = 0; col < columnCount(); col++ )
         {
-            CrosswordCell *cell = dynamic_cast<CrosswordCell*>( item( row, col ) );
+            CrosswordCell *cell = getCell( row, col );
             if( cell )
                 cell->hilite( flag );
         }
@@ -494,7 +525,7 @@ void CrosswordGrid::colRowToDownAcross( const int col, const int row,  int& down
 
         down = downCell->number();
 
-        downCell = dynamic_cast<CrosswordCell*>( item( col, --r ) );
+        downCell = getCell( col, --r );
     }
 
     // Find nearest across solution number.
@@ -507,7 +538,30 @@ void CrosswordGrid::colRowToDownAcross( const int col, const int row,  int& down
 
         across = acrossCell->number();
 
-        acrossCell = dynamic_cast<CrosswordCell*>( item( --c, row ) );
+        acrossCell = getCell( --c, row );
+    }
+}
+
+void CrosswordGrid::keyPressEvent( QKeyEvent *event )
+{
+    switch( event->key() )
+    {
+        case Qt::Key_Up:
+            setCurrentCell( currentRow() - 1, currentColumn() );
+            break;
+        case Qt::Key_Down:
+            setCurrentCell( currentRow() + 1, currentColumn() );
+            break;
+        case Qt::Key_Right:
+        case Qt::Key_Tab:
+            setCurrentCell( currentRow(), currentColumn() + 1);
+            break;
+        case Qt::Key_Left:
+        case Qt::Key_Backtab:
+            setCurrentCell( currentRow(), currentColumn() - 1 );
+            break;
+        default:
+            QTableWidget::keyPressEvent( event );
     }
 }
 

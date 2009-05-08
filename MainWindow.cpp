@@ -25,7 +25,7 @@ MainWindow::MainWindow( QWidget *parent )
     QMenu *fileMenu = menuBar()->addMenu( tr( "&File" ) );
     fileMenu->addAction( "&Open...", this, SLOT( launchOpenDialog() ), QKeySequence::Open );
     fileMenu->addAction( "&Save...", this, SLOT( launchSaveDialog() ), QKeySequence::Save );
-    fileMenu->addAction( "&Quit",    qApp, SLOT( quit() ) );
+    fileMenu->addAction( "&Quit",    qApp, SLOT( quit() ), QKeySequence::Close );
 
     QMenu *viewMenu = menuBar()->addMenu( tr( "&View" ) );
     viewMenu->addAction( "Reveal Puzzle", this, SLOT( revealSolution() ) );

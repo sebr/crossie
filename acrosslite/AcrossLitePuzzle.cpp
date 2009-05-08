@@ -239,6 +239,7 @@ void AcrossLitePuzzle::load( const string& filename )
                 if ( clueText.size() == 0 )
                 {
                     cout << "Unexepected EOF while reading clues." << endl;
+                    continue;
                 }
 
                 AcrossLiteClue c( number, clueText );
@@ -252,6 +253,7 @@ void AcrossLitePuzzle::load( const string& filename )
                 if ( clueText.size() == 0 )
                 {
                     cout << "Unexepected EOF while reading clues." << endl;
+                    continue;
                 }
 
                 AcrossLiteClue c( number, clueText );

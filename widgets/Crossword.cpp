@@ -13,6 +13,7 @@
 
 #include "Crossword.h"
 
+#include <QDebug>
 #include <QVBoxLayout>
 
 Crossword::Crossword( QWidget* parent )
@@ -57,13 +58,13 @@ Crossword::Crossword( QWidget* parent )
     setLayout( mainLayout );
 
     connect( m_acrossClues, SIGNAL( clueSelected(AcrossLiteClue::Orientation, int) ),
-             m_grid,        SLOT  ( setFocusCell(AcrossLiteClue::Orientation, int) ) );
+             m_grid,        SLOT  ( selectClue(AcrossLiteClue::Orientation, int) ) );
 
     connect( m_downClues,   SIGNAL( clueSelected(AcrossLiteClue::Orientation, int) ),
-             m_grid,        SLOT  ( setFocusCell(AcrossLiteClue::Orientation, int) ) );
+             m_grid,        SLOT  ( selectClue(AcrossLiteClue::Orientation, int) ) );
 
-    connect( m_grid,        SIGNAL( colRowFocused(int, int) ),
-             this,          SLOT  ( handleNewColRowFocused(int, int) ) );
+    connect( m_grid, SIGNAL( currentCellChanged(int, int, int, int) ),
+             this,   SLOT  ( handleNewColRowFocused(int, int, int, int) ) );
 }
 
 Crossword::~Crossword ()
@@ -128,16 +129,21 @@ void Crossword::checkLetter()
     m_grid->checkLetter ();
 }
 
-void Crossword::handleNewColRowFocused( int newCol, int newRow )
+void Crossword::handleNewColRowFocused( int currentRow, int currentColumn, int previousRow, int previousColumn )
 {
+    Q_UNUSED( previousRow )
+    Q_UNUSED( previousColumn )
+
     int down, across;
 
-    m_grid->colRowToDownAcross( newCol, newRow, down, across );
+    m_grid->colRowToDownAcross( currentColumn, currentRow, down, across );
 
-    if( down != -1 )
-        m_downClues->clueSelected (down);
+    qDebug() << "selected across:" << across << "; down:" << down;
 
-    if( across != -1 )
-        m_acrossClues->clueSelected (across);
+    if( down > 0 )
+        m_downClues->clueSelected( down );
+
+    if( across > 0 )
+        m_acrossClues->clueSelected( across );
 }
 

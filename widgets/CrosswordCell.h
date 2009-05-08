@@ -22,6 +22,8 @@ class CrosswordCell : public QTableWidgetItem
         CrosswordCell();
         ~CrosswordCell();
 
+        static int cellSize() { return 40; }
+
         void setSolution( const QChar &letter );
         QChar solution() const;
 

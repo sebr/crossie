@@ -79,7 +79,7 @@ Qt::ItemFlags CrosswordCell::flags() const
 
 QSize CrosswordCell::sizeHint() const
 {
-    return QSize( 40, 40 );
+    return QSize( cellSize(), cellSize() );
 }
 
 QSizePolicy CrosswordCell::sizePolicy() const

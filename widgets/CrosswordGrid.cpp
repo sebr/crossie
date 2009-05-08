@@ -13,7 +13,6 @@
 
 #include "CrosswordGrid.h"
 
-#include <QDebug>
 #include <QHeaderView>
 #include <QMouseEvent>
 
@@ -66,7 +65,7 @@ void CrosswordGrid::setPuzzle( AcrossLitePuzzle* puzzle )
             setItem( row, col, cell );
         }
     }
-    qDebug() << "colWidth:" << colWidth << " rowHeight: " << rowHeight;
+
     for( int col = 0; col < columnCount(); col++ )
         setColumnWidth( col, colWidth );
     for( int row = 0; row < rowCount(); row++ )
@@ -164,17 +163,13 @@ void CrosswordGrid::checkLetter()
 
 QSize CrosswordGrid::sizeHint() const
 {
-    return QSize( 20, 20 );
+    int cellSize = CrosswordCell::cellSize() + 2;
+    return QSize( cellSize * rowCount(), cellSize * columnCount() );
 }
 
 QSizePolicy CrosswordGrid::sizePolicy() const
 {
-    return QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-}
-
-QSize CrosswordGrid::minimumSizeHint() const
-{
-    return QSize( 20, 20 );
+    return QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 }
 
 void CrosswordGrid::setFocusOrientation( const CrosswordGrid::FocusOrientation orientation )
@@ -264,7 +259,7 @@ void CrosswordGrid::colRowToDownAcross( const int col, const int row,  int& down
 
     // Find nearest down solution number.
     int r = row;
-    CrosswordCell* downCell = dynamic_cast<CrosswordCell*>( item( col, r ) );
+    CrosswordCell* downCell = getCell( col, r );
     while( downCell )
     {
         if( downCell->isBlank() )
@@ -277,7 +272,7 @@ void CrosswordGrid::colRowToDownAcross( const int col, const int row,  int& down
 
     // Find nearest across solution number.
     int c = col;
-    CrosswordCell* acrossCell = dynamic_cast<CrosswordCell*>( item( c, row ) );
+    CrosswordCell* acrossCell = getCell( c, row );
     while( acrossCell )
     {
         if( acrossCell->isBlank() )
@@ -317,3 +312,6 @@ void CrosswordGrid::keyPressEvent( QKeyEvent *event )
     QTableWidget::keyPressEvent( event );
 }
 
+void CrosswordGrid::selectClue( AcrossLiteClue::Orientation orientation, int clueNumber )
+{
+}

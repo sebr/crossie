@@ -58,21 +58,25 @@ public:
 
     void colRowToDownAcross( const int col, const int row, int& down, int& across );
 
-    virtual QSize minimumSizeHint() const;
     virtual QSize sizeHint() const;
     virtual QSizePolicy sizePolicy() const;
     virtual void  keyPressEvent( QKeyEvent* e );
 
+public slots:
+    void selectClue( AcrossLiteClue::Orientation orientation, int clueNumber );
+
 signals:
     void rowFocused( int row );
     void colFocused( int col );
-    void colRowFocused( int col, int row );
 
 private:
     CrosswordCell *getCell( const int row, const int col ) const;
 
     AcrossLitePuzzle*     m_puzzle;
     FocusOrientation      m_focusOrientation;
+
+    QMap<int, CrosswordCell*> m_acrossClues;
+    QMap<int, CrosswordCell*> m_downClues;
 };
 
 

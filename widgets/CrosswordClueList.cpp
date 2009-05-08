@@ -81,7 +81,9 @@ void CrosswordClueList::clueSelected( int n )
         CrosswordClue* clue = static_cast<CrosswordClue*>( item( i ) );
         if( clue->number() == n )
         {
+            blockSignals(true);
             clue->setSelected( true );
+            blockSignals(false);
             scrollToItem( clue, EnsureVisible );
             break;
         }

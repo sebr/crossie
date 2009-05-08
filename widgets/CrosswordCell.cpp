@@ -17,8 +17,6 @@
 
 CrosswordCell::CrosswordCell()
     : QTableWidgetItem()
-    , m_colLabel( 0 )
-    , m_rowLabel( 0 )
     , m_solution( '.' )
     , m_guess()
     , m_isSolutionRevealed( false )
@@ -92,22 +90,6 @@ QSizePolicy CrosswordCell::sizePolicy() const
 void CrosswordCell::setSolution( const QChar &letter )
 {
     m_solution = letter;
-}
-
-void CrosswordCell::setColRowLabel( const int col, const int row )
-{
-    m_colLabel = col;
-    m_rowLabel = row;
-}
-
-int CrosswordCell::colLabel() const
-{
-    return m_colLabel;
-}
-
-int CrosswordCell::rowLabel() const
-{
-    return m_rowLabel;
 }
 
 void CrosswordCell::setGuess( const QChar &letter )

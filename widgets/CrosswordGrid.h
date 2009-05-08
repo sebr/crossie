@@ -50,9 +50,6 @@ public:
     void checkLetter();
 
     CrosswordCell* cell( const int number );
-    void setFocusCell( const int col, const int row );
-    void retreatFocusCell();
-    void advanceFocusCell( const int count = 1 );
     void setFocusOrientation( const CrosswordGrid::FocusOrientation orientation );
     CrosswordGrid::FocusOrientation focusOrientation() const;
 
@@ -65,14 +62,6 @@ public:
     virtual QSize sizeHint() const;
     virtual QSizePolicy sizePolicy() const;
     virtual void  keyPressEvent( QKeyEvent* e );
-//    virtual void  mousePressEvent( QMouseEvent* e );
-    virtual bool  eventFilter( QObject* o, QEvent *e );
-
-public slots:
-    void setFocusCell( AcrossLiteClue::Orientation o, int number );
-
-//private slots:
-//    void currentCellChanged( QTableWidgetItem *current, QTableWidgetItem *previous );
 
 signals:
     void rowFocused( int row );

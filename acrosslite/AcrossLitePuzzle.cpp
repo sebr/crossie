@@ -249,95 +249,8 @@ void AcrossLitePuzzle::load( const string& filename )
     stat = ::close( fh );
 }
 
-void AcrossLitePuzzle::save( const string& filename )
+void AcrossLitePuzzle::save( const string& )
 {
-    // Create the file.
-    int fh = ::creat( filename.c_str(), 0666 );
-    if ( fh < 0 )
-    {
-        return;
-    }
-
-    // Write the header.
-    int stat = ::write( fh, &_header, sizeof( AcrossLitePuzHeader ) );
-    if ( stat != sizeof( AcrossLitePuzHeader ) )
-    {
-        return;
-    }
-
-    // Write the the Solution.
-    for ( int r = 0; r < nRows(); r++ )
-    {
-        for ( int c = 0; c < nColumns(); c++ )
-        {
-
-            char letter = _solution.cell( c, r );
-
-            stat = ::write( fh, &letter, 1 );
-            if ( stat != 1 )
-            {
-                return;
-            }
-        }
-    }
-
-    // Write the the Diagram.
-    for ( int r = 0; r < nRows(); r++ )
-    {
-        for ( int c = 0; c < nColumns(); c++ )
-        {
-
-            char letter = _diagram.cell( c, r );
-
-            if ( letter == ' ' ) letter = '-';
-
-            stat = ::write( fh, &letter, 1 );
-            if ( stat != 1 )
-            {
-                return;
-            }
-        }
-    }
-
-    // Write the puzzle name, author, and copyright.
-    _writeString( fh, _puzzleName );
-    _writeString( fh, _authorName );
-    _writeString( fh, _copyright );
-
-    // Write the clues.
-    int acrossIndex = 0;
-    int downIndex   = 0;
-    for ( int r = 0; r < nRows(); r++ )
-    {
-        for ( int c = 0; c < nColumns(); c++ )
-        {
-            int number = cellNumber( c, r );
-            if ( number == 0 ) continue;
-
-            // Try an 'across'
-            if ( c == 0 || diagramCell( c - 1, r ) == '.' )
-            {
-                string clueText = _acrossClues[acrossIndex].clue();
-                _writeString( fh, clueText );
-                acrossIndex++;
-            }
-
-            // Try a 'down'
-            if ( r == 0 || diagramCell( c, r - 1 ) == '.' )
-            {
-                string clueText = _downClues[downIndex].clue();
-                _writeString( fh, clueText );
-                downIndex++;
-            }
-        }
-    }
-
-    // Close the file.
-    stat = ::close( fh );
-    if ( stat < 0 )
-    {
-        return;
-    }
 }
 
 void AcrossLitePuzzle::copy( const AcrossLitePuzzle& rhs )
@@ -390,7 +303,6 @@ void AcrossLitePuzzle::_calculateCellNumbers()
             else
                 _numbers.setCell( c, r, 0 );
         }
-        cout << endl;
     }
 }
 

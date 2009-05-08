@@ -40,7 +40,7 @@ class AcrossLitePuzzle
         friend ostream& operator<< ( ostream& os, const AcrossLitePuzzle& rhs );
 
         void load( const string& filename );
-        void save( const string& filename );
+        void save( const string& );
         void copy( const AcrossLitePuzzle& puzzle );
 
         int  nColumns() const;

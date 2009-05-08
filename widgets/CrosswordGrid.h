@@ -71,8 +71,8 @@ public:
 public slots:
     void setFocusCell( AcrossLiteClue::Orientation o, int number );
 
-private slots:
-    void currentCellChanged( QTableWidgetItem *current, QTableWidgetItem *previous );
+//private slots:
+//    void currentCellChanged( QTableWidgetItem *current, QTableWidgetItem *previous );
 
 signals:
     void rowFocused( int row );

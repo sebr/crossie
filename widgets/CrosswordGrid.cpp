@@ -29,8 +29,8 @@ CrosswordGrid::CrosswordGrid( QWidget* parent )
     horizontalHeader()->hide();
     verticalHeader()->hide();
 
-    connect( this, SIGNAL( currentItemChanged(QTableWidgetItem*, QTableWidgetItem*) ),
-             this, SLOT  ( currentCellChanged(QTableWidgetItem*, QTableWidgetItem*) ) );
+//    connect( this, SIGNAL( currentItemChanged(QTableWidgetItem*, QTableWidgetItem*) ),
+//             this, SLOT  ( currentCellChanged(QTableWidgetItem*, QTableWidgetItem*) ) );
 }
 
 CrosswordGrid::~CrosswordGrid()
@@ -40,14 +40,6 @@ CrosswordGrid::~CrosswordGrid()
 CrosswordCell *CrosswordGrid::getCell( const int row, const int col ) const
 {
     return dynamic_cast<CrosswordCell*>( item( row, col ) );
-}
-
-void CrosswordGrid::currentCellChanged( QTableWidgetItem *current, QTableWidgetItem *previous )
-{
-    Q_UNUSED( previous )
-    CrosswordCell *cell = dynamic_cast<CrosswordCell*>( current );
-    if( cell && !cell->isBlank() && !cell->isSolutionRevealed() )
-        editItem( current );
 }
 
 void CrosswordGrid::setPuzzle( AcrossLitePuzzle* puzzle )
@@ -66,7 +58,6 @@ void CrosswordGrid::setPuzzle( AcrossLitePuzzle* puzzle )
         for( int col = 0; col < columnCount(); col++ )
         {
             CrosswordCell* cell = new CrosswordCell();
-            cell->setColRowLabel( col, row );
             cell->setSolution( m_puzzle->solutionCell( col, row ) );
             cell->setShowCorrectness( false );
             cell->setGuess( m_puzzle->diagramCell( col, row ) );
@@ -342,7 +333,7 @@ bool CrosswordGrid::eventFilter( QObject* o, QEvent* e )
 }
 
 
-CrosswordCell* CrosswordGrid::cell( const int number )
+CrosswordCell* CrosswordGrid::cell( const int )
 {
 //    QObjectList*  l = queryList( "QWidget", "CrosswordCell" );
 //    QObjectListIt it( *l );
@@ -358,7 +349,7 @@ CrosswordCell* CrosswordGrid::cell( const int number )
 //        ++it;
 //    }
 //
-//    return 0;
+    return 0;
 }
 
 
@@ -377,7 +368,7 @@ void CrosswordGrid::setFocusCell( const int col, const int row )
     }
 }
 
-void CrosswordGrid::setFocusCell( AcrossLiteClue::Orientation o, int number )
+void CrosswordGrid::setFocusCell( AcrossLiteClue::Orientation, int )
 {
 //    hiliteFullSolution( false );
 //
@@ -403,7 +394,7 @@ void CrosswordGrid::setFocusCell( AcrossLiteClue::Orientation o, int number )
 //    }
 }
 
-void CrosswordGrid::advanceFocusCell( const int count )
+void CrosswordGrid::advanceFocusCell( const int )
 {
 //    CrosswordCell* c = focusCell();
 //    if ( c == 0 ) return;
@@ -448,8 +439,8 @@ void CrosswordGrid::hiliteSolution( const bool flag )
     if( !c )
         return;
 
-    int col = c->colLabel(); // Get current col/row.
-    int row = c->rowLabel();
+    int col = c->column();
+    int row = c->row();
 
     if ( focusOrientation() == CrosswordGrid::FocusVertical )
     {
@@ -544,24 +535,29 @@ void CrosswordGrid::colRowToDownAcross( const int col, const int row,  int& down
 
 void CrosswordGrid::keyPressEvent( QKeyEvent *event )
 {
-    switch( event->key() )
+    if( currentItem() )
     {
-        case Qt::Key_Up:
-            setCurrentCell( currentRow() - 1, currentColumn() );
-            break;
-        case Qt::Key_Down:
-            setCurrentCell( currentRow() + 1, currentColumn() );
-            break;
-        case Qt::Key_Right:
-        case Qt::Key_Tab:
-            setCurrentCell( currentRow(), currentColumn() + 1);
-            break;
-        case Qt::Key_Left:
-        case Qt::Key_Backtab:
-            setCurrentCell( currentRow(), currentColumn() - 1 );
-            break;
-        default:
-            QTableWidget::keyPressEvent( event );
+        if( (QChar(event->key()) >= 'a' && QChar(event->key()) <= 'z') ||
+            (QChar(event->key()) >= 'A' && QChar(event->key()) <= 'Z') )
+        {
+            currentItem()->setText( QChar(event->key()) );
+
+            if( focusOrientation() == CrosswordGrid::FocusHorizontal )
+            {
+                int col = currentColumn();
+                if( col < columnCount() )
+                    setCurrentCell( currentRow(), col + 1);
+            }
+            else
+            {
+                int row = currentRow();
+                if( row < rowCount() )
+                    setCurrentCell( row + 1, currentColumn() );
+            }
+            return;
+        }
     }
+
+    QTableWidget::keyPressEvent( event );
 }
 

@@ -42,14 +42,13 @@ class CrosswordCell : public QTableWidgetItem
         bool isHilited() const;
         bool isBlank() const { return m_solution == '.'; }
 
+        Qt::ItemFlags flags() const;
         virtual QVariant data( int role ) const;
 
         virtual QSize sizeHint() const;
         virtual QSizePolicy sizePolicy() const;
 
     private:
-        void setFlags();
-
         int  m_colLabel;
         int  m_rowLabel;
         QChar m_solution;

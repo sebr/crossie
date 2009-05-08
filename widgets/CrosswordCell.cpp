@@ -27,7 +27,6 @@ CrosswordCell::CrosswordCell()
     , m_isNumberShown( false )
     , m_isHilited( false )
 {
-    setFlags();
     setTextAlignment( Qt::AlignCenter );
 }
 
@@ -44,8 +43,8 @@ QVariant CrosswordCell::data( int role ) const
             if( isBlank() )
                 return QString();
             if( isSolutionRevealed() )
-                return m_solution;
-            return m_guess;
+                return m_solution.toUpper();
+            return QTableWidgetItem::data( role ).toString().toUpper();
         }
         case Qt::ForegroundRole:
         {
@@ -71,17 +70,18 @@ QVariant CrosswordCell::data( int role ) const
     return QTableWidgetItem::data( role );
 }
 
-void CrosswordCell::setFlags()
+Qt::ItemFlags CrosswordCell::flags() const
 {
     if( isBlank() )
-        QTableWidgetItem::setFlags( Qt::NoItemFlags );
-    else
-        QTableWidgetItem::setFlags( Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled );
+        return Qt::NoItemFlags;
+    if( isSolutionRevealed() )
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    return Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled;
 }
 
 QSize CrosswordCell::sizeHint() const
 {
-    return QSize( 20, 20 );
+    return QSize( 40, 40 );
 }
 
 QSizePolicy CrosswordCell::sizePolicy() const
@@ -92,7 +92,6 @@ QSizePolicy CrosswordCell::sizePolicy() const
 void CrosswordCell::setSolution( const QChar &letter )
 {
     m_solution = letter;
-    setFlags();
 }
 
 void CrosswordCell::setColRowLabel( const int col, const int row )
@@ -136,7 +135,7 @@ void CrosswordCell::revealSolution( const bool flag )
 {
     m_isSolutionRevealed = flag;
 
-    if ( flag )
+    if( flag )
         setShowCorrectness( false );
 }
 
@@ -164,7 +163,7 @@ void CrosswordCell::setNumber( const int number )
 {
     m_number = number;
 
-    if ( m_number == 0 )
+    if( m_number <= 0 )
         showNumber( false );
 }
 
@@ -175,13 +174,7 @@ int CrosswordCell::number() const
 
 void CrosswordCell::showNumber( const bool flag )
 {
-    if ( m_number == 0 )
-    {
-        m_isNumberShown = false;
-        return;
-    }
-
-    m_isNumberShown = flag;
+    m_isNumberShown = flag && m_number > 0;
 }
 
 bool CrosswordCell::isNumberShown() const

@@ -224,21 +224,24 @@ void AcrossLitePuzzle::load( const string& filename )
             if( number == 0 )
                 continue;
 
-            const bool isAcrossClue = isAcrossClueNumber(r, c);
-            const bool isDownClue = isDownClueNumber(r, c);
-
-            if( isAcrossClue || isDownClue )
+            if( isAcrossClueNumber(r, c) )
             {
                 string clueText = _readString( fh );
                 if ( clueText.size() == 0 )
                     cout << "Unexepected EOF while reading clues." << endl;
 
                 AcrossLiteClue clue( number, clueText );
+                _acrossClues.push_back( clue );
+            }
 
-                if( isAcrossClue )
-                    _acrossClues.push_back( clue );
-                else
-                    _downClues.push_back( clue );
+            if( isDownClueNumber(r, c) )
+            {
+                string clueText = _readString( fh );
+                if ( clueText.size() == 0 )
+                    cout << "Unexepected EOF while reading clues." << endl;
+
+                AcrossLiteClue clue( number, clueText );
+                _downClues.push_back( clue );
             }
         }
     }

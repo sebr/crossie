@@ -78,7 +78,10 @@ signals:
 private:
     CrosswordCell *getCell( const int row, const int col ) const;
     QList<CrosswordCell*> getCells() const;
-    bool isBlankCell( int col, int row ) const;
+    bool isOutOfBounds( const int row, const int col ) const;
+    bool isBlankCell( const int col, const int row ) const;
+
+    bool handleArrowKey( QKeyEvent *event, QTableWidgetItem *item );
 
     AcrossLitePuzzle *m_puzzle;
     FocusOrientation  m_focusOrientation;

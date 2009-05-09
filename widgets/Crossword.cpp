@@ -12,6 +12,7 @@
  ***************************************************************************/
 
 #include "Crossword.h"
+#include "CrosswordClue.h"
 
 #include <QDebug>
 #include <QVBoxLayout>
@@ -84,6 +85,9 @@ void Crossword::setPuzzle (const QString& filename)
     m_grid->setPuzzle( m_puzzle );
     m_acrossClues->setPuzzle( m_puzzle, AcrossLiteClue::Across );
     m_downClues->setPuzzle( m_puzzle, AcrossLiteClue::Down );
+
+    CrosswordClue *firstClue = static_cast<CrosswordClue*>( m_acrossClues->item(0) );
+        m_grid->clueSelected( AcrossLiteClue::Across, firstClue->number() );
 
     m_puzzleGroupBox->setTitle( QString( m_puzzle->puzzleName().c_str() ) );
 }

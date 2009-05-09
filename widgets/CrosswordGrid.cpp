@@ -38,10 +38,15 @@ CrosswordGrid::~CrosswordGrid()
 {
 }
 
+bool CrosswordGrid::isOutOfBounds( const int row, const int col ) const
+{
+    return ( row >= rowCount() || col >= columnCount() || row < 0 || col < 0 );
+}
+
 CrosswordCell *CrosswordGrid::getCell( const int row, const int col ) const
 {
     // Check bounds conditions
-    if( row >= rowCount() || col >= columnCount() || row < 0 || col < 0 )
+    if( isOutOfBounds( row, col ) )
         return 0;
 
     return dynamic_cast<CrosswordCell*>( item( row, col ) );
@@ -167,9 +172,9 @@ QSizePolicy CrosswordGrid::sizePolicy() const
     return QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 }
 
-bool CrosswordGrid::isBlankCell( int col, int row ) const
+bool CrosswordGrid::isBlankCell( const int row, const int col ) const
 {
-    const CrosswordCell *cell = getCell( col, row );
+    const CrosswordCell *cell = getCell( row, col );
     return cell ? cell->isBlank() : false;
 }
 
@@ -296,31 +301,102 @@ void CrosswordGrid::colRowToDownAcross( const int col, const int row,  int& down
 
 void CrosswordGrid::keyPressEvent( QKeyEvent *event )
 {
-    if( currentItem() )
+    QTableWidgetItem *item = currentItem();
+    if( item )
     {
         if( (QChar(event->key()) >= 'a' && QChar(event->key()) <= 'z') ||
             (QChar(event->key()) >= 'A' && QChar(event->key()) <= 'Z') )
         {
-            currentItem()->setText( QChar(event->key()) );
+            item->setText( QChar(event->key()) );
 
             if( focusOrientation() == CrosswordGrid::FocusHorizontal )
             {
-                int col = currentColumn();
+                int col = item->column();
                 if( col < columnCount() )
-                    setCurrentCell( currentRow(), col + 1);
+                    setCurrentCell( item->row(), col + 1);
             }
             else
             {
-                int row = currentRow();
+                int row = item->row();
                 if( row < rowCount() )
-                    setCurrentCell( row + 1, currentColumn() );
+                    setCurrentCell( row + 1, item->column() );
             }
             return;
         }
     }
 
+    if( handleArrowKey(event, item) )
+        return;
+
     QTableWidget::keyPressEvent( event );
 }
+
+/**
+  * Skips blank squares and moves to the next/prev col/row if necessary
+  */
+bool CrosswordGrid::handleArrowKey( QKeyEvent *event, QTableWidgetItem *item )
+{
+    const bool isUp    = event->key() == Qt::Key_Up;
+    const bool isDown  = event->key() == Qt::Key_Down;
+    const bool isRight = event->key() == Qt::Key_Right;
+    const bool isLeft  = event->key() == Qt::Key_Left;
+
+    if( !item || !(isUp || isDown || isRight || isLeft) )
+        return false;
+
+    int row = item->row();
+    int col = item->column();
+
+    CrosswordCell *nextItem = dynamic_cast<CrosswordCell*>( item );
+
+    while( nextItem )
+    {
+        if( row == 0 && col == 0 )
+            return true;
+
+        if( nextItem != item )
+        {
+            if( !nextItem->isBlank() )
+                break;
+        }
+
+        // Left/Up direction means we move into the top left corner
+        if( isUp || isLeft )
+        {
+            if( isUp && --row < 0 )
+            {
+                row = rowCount() - 1;
+                --col;
+            }
+            else if( isLeft && --col < 0 )
+            {
+                col = columnCount() - 1;
+                --row;
+            }
+        }
+        // Right/Down direction means we move into the bottom right corner
+        else if( isDown || isRight )
+        {
+            if( isDown && ++row == rowCount() )
+            {
+                row = 0;
+                ++col;
+            }
+            else if( isRight && ++col == columnCount() )
+            {
+                col = 0;
+                ++row;
+            }
+        }
+
+        nextItem = getCell( row, col );
+    }
+    if( nextItem )
+        setCurrentItem( nextItem );
+
+    return true;
+}
+
 
 void CrosswordGrid::mousePressEvent( QMouseEvent *event )
 {
@@ -353,7 +429,10 @@ void CrosswordGrid::clueSelected( AcrossLiteClue::Orientation orientation, int c
 
     clearSelection();
     if( target )
+    {
+        setCurrentItem( target );
         target->setSelected(true);
+    }
 
     while( target )
     {

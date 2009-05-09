@@ -21,6 +21,7 @@ CrosswordGrid::CrosswordGrid( QWidget* parent )
     : QTableWidget( parent )
     , m_puzzle( 0 )
     , m_focusOrientation( FocusHorizontal )
+    , m_selectedNumber( 0 )
 {
     setEditTriggers( QAbstractItemView::NoEditTriggers );
     setSelectionMode( QAbstractItemView::SingleSelection );
@@ -28,6 +29,9 @@ CrosswordGrid::CrosswordGrid( QWidget* parent )
 
     horizontalHeader()->hide();
     verticalHeader()->hide();
+    
+    connect( this, SIGNAL( currentCellChanged(int, int, int, int) ),
+             this, SLOT  ( cellSelectedChanged() ) );
 }
 
 CrosswordGrid::~CrosswordGrid()
@@ -82,6 +86,9 @@ void CrosswordGrid::setPuzzle( AcrossLitePuzzle* puzzle )
             colWidth  = cell->sizeHint().width();
             rowHeight = cell->sizeHint().height();
 
+            connect( cell, SIGNAL( updated() ),
+                     this,   SLOT( cellUpdated() ) );
+
             setItem( row, col, cell );
         }
     }
@@ -112,7 +119,7 @@ void CrosswordGrid::revealWord( const bool flag )
 {
     foreach( CrosswordCell *cell, getCells() )
     {
-        if( cell->isHilited() )
+        if( cell->isHighlighted() )
             cell->revealSolution( flag );
     }
 }
@@ -120,7 +127,7 @@ void CrosswordGrid::revealWord( const bool flag )
 void CrosswordGrid::revealLetter( const bool flag )
 {
     CrosswordCell* cell = dynamic_cast<CrosswordCell*>( currentItem() );
-    if( cell->isHilited() )
+    if( cell->isHighlighted() )
         cell->revealSolution( flag );
 }
 
@@ -140,7 +147,7 @@ void CrosswordGrid::checkWord()
 {
     foreach( CrosswordCell *cell, getCells() )
     {
-        if( cell->isHilited() )
+        if( cell->isHighlighted() )
             cell->setShowCorrectness( true );
     }
 }
@@ -148,7 +155,7 @@ void CrosswordGrid::checkWord()
 void CrosswordGrid::checkLetter()
 {
     CrosswordCell* cell = dynamic_cast<CrosswordCell*>( currentItem() );
-    if ( cell && cell->isHilited() )
+    if ( cell && cell->isHighlighted() )
         cell->setShowCorrectness( true );
 }
 
@@ -163,78 +170,100 @@ QSizePolicy CrosswordGrid::sizePolicy() const
     return QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 }
 
-void CrosswordGrid::setFocusOrientation( const CrosswordGrid::FocusOrientation orientation )
+bool CrosswordGrid::isBlankCell( int col, int row ) const
 {
-    hiliteSolution( false );
-    m_focusOrientation = orientation;
-    hiliteSolution( true );
+    const CrosswordCell *cell = getCell( col, row );
+    return cell ? cell->isBlank() : false;
 }
 
-CrosswordGrid::FocusOrientation CrosswordGrid::focusOrientation() const
+CrosswordGrid::FocusOrientation CrosswordGrid::cellOrientation( const CrosswordCell *cell ) const
 {
-    return m_focusOrientation;
+    if( !cell )
+        return FocusUnknown;
+
+    const int col = cell->column();
+    const int row = cell->row();
+
+    bool isAcross = false;
+    bool isDown = false;
+
+    if( !isBlankCell(row, col - 1) || !isBlankCell(row, col + 1) )
+        isAcross = true;
+
+    if( !isBlankCell(row - 1, col) || !isBlankCell(row + 1, col) )
+        isDown = true;
+
+    if( isAcross && isDown )
+        return FocusBoth;
+    else if( isAcross )
+        return FocusHorizontal;
+    else if( isDown )
+        return FocusVertical;
+
+    return FocusUnknown;
 }
 
-void CrosswordGrid::hiliteSolution( const bool flag )
+void CrosswordGrid::highlightWord()
 {
-    CrosswordCell* c = dynamic_cast<CrosswordCell*>( currentItem() );
-    if( !c )
+    CrosswordCell* cell = dynamic_cast<CrosswordCell*>( currentItem() );
+    if( !cell )
         return;
 
-    int col = c->column();
-    int row = c->row();
+    cell->highlight(true);
+    int col = cell->column();
+    int row = cell->row();
 
-    if ( focusOrientation() == CrosswordGrid::FocusVertical )
+    if ( m_focusOrientation == CrosswordGrid::FocusVertical )
     {
         // Current to top.
         for ( int r = row; ; r-- )
         {
-            CrosswordCell* cx = getCell( col, r );
+            CrosswordCell* cx = getCell( r, col );
             if( !cx || cx->isBlank() )
                 break;
 
-            cx->hilite( flag );
+            cx->highlight(true);
         }
 
         // Current to bottom.
         for ( int r = row; ; r++ )
         {
-            CrosswordCell* cx = getCell( col, r );
+            CrosswordCell* cx = getCell( r, col );
             if( !cx || cx->isBlank() )
                 break;
 
-            cx->hilite( flag );
+            cx->highlight(true);
         }
 
     }
-    else if ( focusOrientation() == CrosswordGrid::FocusHorizontal )
+    else if ( m_focusOrientation == CrosswordGrid::FocusHorizontal )
     {
         // Current to left.
         for ( int c = col; ; c-- )
         {
-            CrosswordCell* cx = getCell( c, row );
+            CrosswordCell* cx = getCell( row, c );
             if( !cx || cx->isBlank() )
                 break;
 
-            cx->hilite( flag );
+            cx->highlight(true);
         }
 
         // Current to right.
         for ( int c = col; ; c++ )
         {
-            CrosswordCell* cx = getCell( c, row );
+            CrosswordCell* cx = getCell( row, c );
             if( !cx || cx->isBlank() )
                 break;
 
-            cx->hilite( flag );
+            cx->highlight(true);
         }
     }
 }
 
-void CrosswordGrid::hiliteFullSolution( const bool flag )
+void CrosswordGrid::clearHighlights()
 {
     foreach( CrosswordCell *cell, getCells() )
-        cell->hilite( flag );
+        cell->highlight( false );
 }
 
 void CrosswordGrid::colRowToDownAcross( const int col, const int row,  int& down, int& across )
@@ -296,15 +325,21 @@ void CrosswordGrid::keyPressEvent( QKeyEvent *event )
     QTableWidget::keyPressEvent( event );
 }
 
-void CrosswordGrid::selectClue( AcrossLiteClue::Orientation orientation, int clueNumber )
+void CrosswordGrid::clueSelected( AcrossLiteClue::Orientation orientation, int clueNumber )
 {
     qDebug() << "Highlighting" << (orientation == AcrossLiteClue::Across ? "across" : "down")<< "clue" << clueNumber;
+
+    if( orientation == AcrossLiteClue::Across )
+        m_focusOrientation = FocusHorizontal;
+    else if( orientation == AcrossLiteClue::Down )
+        m_focusOrientation = FocusVertical;
+
     CrosswordCell *target = 0;
     foreach( CrosswordCell *cell, getCells() )
     {
         if( !target && cell->number() == clueNumber )
             target = cell;
-        cell->hilite(false);
+        cell->highlight(false);
     }
 
     clearSelection();
@@ -316,10 +351,36 @@ void CrosswordGrid::selectClue( AcrossLiteClue::Orientation orientation, int clu
         if( target->isBlank() )
             break;
 
-        target->hilite(true);
+        target->highlight(true);
         if( orientation == AcrossLiteClue::Across )
             target = getCell( target->row(), target->column() + 1 );
         else
             target = getCell( target->row() + 1, target->column() );
+    }
+
+    m_selectedNumber = clueNumber;
+}
+
+void CrosswordGrid::cellSelectedChanged()
+{
+    clearHighlights();
+
+    CrosswordCell* cell = dynamic_cast<CrosswordCell*>( currentItem() );
+    FocusOrientation orientation = cellOrientation( cell );
+
+    // Change the orientation. If we are at a crossroad, then keep the last orientation
+    if( orientation != FocusBoth )
+        m_focusOrientation = orientation;
+
+    highlightWord();
+}
+
+void CrosswordGrid::cellUpdated()
+{
+    QTableWidgetItem *item = dynamic_cast<QTableWidgetItem*>( sender() );
+    if( item )
+    {
+        QModelIndex index = indexFromItem( item );
+        update( index );
     }
 }

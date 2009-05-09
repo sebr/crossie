@@ -58,13 +58,13 @@ Crossword::Crossword( QWidget* parent )
     setLayout( mainLayout );
 
     connect( m_acrossClues, SIGNAL( clueSelected(AcrossLiteClue::Orientation, int) ),
-             m_grid,        SLOT  ( selectClue(AcrossLiteClue::Orientation, int) ) );
+             m_grid,        SLOT  ( clueSelected(AcrossLiteClue::Orientation, int) ) );
 
     connect( m_downClues,   SIGNAL( clueSelected(AcrossLiteClue::Orientation, int) ),
-             m_grid,        SLOT  ( selectClue(AcrossLiteClue::Orientation, int) ) );
+             m_grid,        SLOT  ( clueSelected(AcrossLiteClue::Orientation, int) ) );
 
     connect( m_grid, SIGNAL( currentCellChanged(int, int, int, int) ),
-             this,   SLOT  ( handleNewColRowFocused(int, int, int, int) ) );
+             this,   SLOT  ( cellSelectedChanged(int, int, int, int) ) );
 }
 
 Crossword::~Crossword ()
@@ -129,7 +129,7 @@ void Crossword::checkLetter()
     m_grid->checkLetter ();
 }
 
-void Crossword::handleNewColRowFocused( int currentRow, int currentColumn, int previousRow, int previousColumn )
+void Crossword::cellSelectedChanged( int currentRow, int currentColumn, int previousRow, int previousColumn )
 {
     Q_UNUSED( previousRow )
     Q_UNUSED( previousColumn )

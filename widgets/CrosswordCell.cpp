@@ -23,7 +23,7 @@ CrosswordCell::CrosswordCell()
     , m_showCorrectness( false )
     , m_number( 0 )
     , m_isNumberShown( false )
-    , m_isHilited( false )
+    , m_isHighlighted( false )
 {
     setTextAlignment( Qt::AlignCenter );
 }
@@ -60,7 +60,7 @@ QVariant CrosswordCell::data( int role ) const
         {
             if( isBlank() )
                 return Qt::black;
-            if( isHilited() )
+            if( isHighlighted() )
                 return Qt::yellow;
             return Qt::white;
         }
@@ -92,6 +92,7 @@ QSizePolicy CrosswordCell::sizePolicy() const
 void CrosswordCell::setSolution( const QChar &letter )
 {
     m_solution = letter;
+    emit updated();
 }
 
 void CrosswordCell::setGuess( const QChar &letter )
@@ -103,16 +104,7 @@ void CrosswordCell::setGuess( const QChar &letter )
         return;
 
     m_guess = letter;
-}
-
-QChar CrosswordCell::solution() const
-{
-    return m_solution;
-}
-
-QChar CrosswordCell::guess() const
-{
-    return m_guess;
+    emit updated();
 }
 
 void CrosswordCell::revealSolution( const bool flag )
@@ -123,19 +115,10 @@ void CrosswordCell::revealSolution( const bool flag )
         setShowCorrectness( false );
 }
 
-bool CrosswordCell::isSolutionRevealed() const
-{
-    return m_isSolutionRevealed;
-}
-
-bool CrosswordCell::showCorrectness() const
-{
-    return m_showCorrectness;
-}
-
 void CrosswordCell::setShowCorrectness( const bool flag )
 {
     m_showCorrectness = flag;
+    emit updated();
 }
 
 bool CrosswordCell::isSolutionCorrect() const
@@ -149,29 +132,18 @@ void CrosswordCell::setNumber( const int number )
 
     if( m_number <= 0 )
         showNumber( false );
-}
 
-int CrosswordCell::number() const
-{
-    return m_number;
+    emit updated();
 }
 
 void CrosswordCell::showNumber( const bool flag )
 {
     m_isNumberShown = flag && m_number > 0;
+    emit updated();
 }
 
-bool CrosswordCell::isNumberShown() const
+void CrosswordCell::highlight( const bool flag )
 {
-    return m_isNumberShown;
-}
-
-void CrosswordCell::hilite( const bool flag )
-{
-    m_isHilited = flag;
-}
-
-bool CrosswordCell::isHilited() const
-{
-    return m_isHilited;
+    m_isHighlighted = flag;
+    emit updated();
 }

@@ -16,8 +16,10 @@
 
 #include <QTableWidgetItem>
 
-class CrosswordCell : public QTableWidgetItem
+class CrosswordCell : public QTableWidgetItem, public QObject
 {
+    Q_OBJECT
+
     public:
         CrosswordCell();
         ~CrosswordCell();
@@ -25,26 +27,26 @@ class CrosswordCell : public QTableWidgetItem
         static int cellSize() { return 40; }
 
         void setSolution( const QChar &letter );
-        QChar solution() const;
+        QChar solution() const { return m_solution; }
 
         void setGuess( const QChar &letter );
-        QChar guess() const;
+        QChar guess() const { return m_guess; }
 
         void revealSolution( const bool flag );
-        bool isSolutionRevealed() const;
+        bool isSolutionRevealed() const { return m_isSolutionRevealed; }
 
         void setShowCorrectness( const bool flag );
-        bool showCorrectness() const;
+        bool showCorrectness() const { return m_showCorrectness; }
         bool isSolutionCorrect() const;
 
         void setNumber( const int number = 0 );
-        int  number() const;
+        int  number() const { return m_number; }
 
         void showNumber( const bool flag );
-        bool isNumberShown() const;
+        bool isNumberShown() const { return m_isNumberShown; }
 
-        void hilite( const bool flag );
-        bool isHilited() const;
+        void highlight( const bool flag );
+        bool isHighlighted() const { return m_isHighlighted; }
 
         bool isBlank() const { return m_solution == '.'; }
 
@@ -54,6 +56,9 @@ class CrosswordCell : public QTableWidgetItem
         virtual QSize sizeHint() const;
         virtual QSizePolicy sizePolicy() const;
 
+    signals:
+        void updated();
+
     private:
         QChar m_solution;
         QChar m_guess;
@@ -61,7 +66,7 @@ class CrosswordCell : public QTableWidgetItem
         bool m_showCorrectness;
         int  m_number;
         bool m_isNumberShown;
-        bool m_isHilited;
+        bool m_isHighlighted;
 };
 
 #endif // CROSSWORDCELL_H

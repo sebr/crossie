@@ -41,8 +41,8 @@ public:
     void checkWord();
     void checkLetter();
 
-public slots:
-    void handleNewColRowFocused( int currentRow, int currentColumn, int previousRow, int previousColumn );
+private slots:
+    void cellSelectedChanged( int currentRow, int currentColumn, int previousRow, int previousColumn );
 
 private:
     AcrossLitePuzzle  *m_puzzle;

@@ -31,7 +31,8 @@ public:
     {
         FocusUnknown    = 0,
         FocusHorizontal = 1,
-        FocusVertical   = 2
+        FocusVertical   = 2,
+        FocusBoth       = 4
     };
 
     CrosswordGrid( QWidget* parent );
@@ -50,11 +51,11 @@ public:
     void checkLetter();
 
     CrosswordCell* cell( const int number );
-    void setFocusOrientation( const CrosswordGrid::FocusOrientation orientation );
-    CrosswordGrid::FocusOrientation focusOrientation() const;
+    CrosswordGrid::FocusOrientation focusOrientation() const { return m_focusOrientation; }
+    CrosswordGrid::FocusOrientation cellOrientation( const CrosswordCell *cell ) const;
 
-    void hiliteSolution( const bool flag );
-    void hiliteFullSolution( const bool flag );
+    void highlightWord();
+    void clearHighlights();
 
     void colRowToDownAcross( const int col, const int row, int& down, int& across );
 
@@ -63,7 +64,11 @@ public:
     virtual void  keyPressEvent( QKeyEvent* e );
 
 public slots:
-    void selectClue( AcrossLiteClue::Orientation orientation, int clueNumber );
+    void clueSelected( AcrossLiteClue::Orientation orientation, int clueNumber );
+
+private slots:
+    void cellSelectedChanged();
+    void cellUpdated();
 
 signals:
     void rowFocused( int row );
@@ -72,9 +77,12 @@ signals:
 private:
     CrosswordCell *getCell( const int row, const int col ) const;
     QList<CrosswordCell*> getCells() const;
+    bool isBlankCell( int col, int row ) const;
 
-    AcrossLitePuzzle*     m_puzzle;
-    FocusOrientation      m_focusOrientation;
+    AcrossLitePuzzle *m_puzzle;
+    FocusOrientation  m_focusOrientation;
+
+    int m_selectedNumber;
 
     QMap<int, CrosswordCell*> m_acrossClues;
     QMap<int, CrosswordCell*> m_downClues;

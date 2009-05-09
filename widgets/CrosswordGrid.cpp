@@ -322,6 +322,18 @@ void CrosswordGrid::keyPressEvent( QKeyEvent *event )
     QTableWidget::keyPressEvent( event );
 }
 
+void CrosswordGrid::mousePressEvent( QMouseEvent *event )
+{
+    CrosswordCell *cell = dynamic_cast<CrosswordCell*>( itemAt( event->pos() ) );
+    if( cell && cell->isBlank() )
+    {
+        event->accept();
+        return;
+    }
+
+    QTableView::mousePressEvent( event );
+}
+
 void CrosswordGrid::clueSelected( AcrossLiteClue::Orientation orientation, int clueNumber )
 {
     qDebug() << "Highlighting" << (orientation == AcrossLiteClue::Across ? "across" : "down")<< "clue" << clueNumber;

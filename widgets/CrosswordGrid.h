@@ -26,7 +26,6 @@ class CrosswordGrid : public QTableWidget
     Q_OBJECT
 
 public:
-
     enum FocusOrientation
     {
         FocusUnknown    = 0,
@@ -61,7 +60,8 @@ public:
 
     virtual QSize sizeHint() const;
     virtual QSizePolicy sizePolicy() const;
-    virtual void  keyPressEvent( QKeyEvent* e );
+    virtual void keyPressEvent( QKeyEvent* e );
+    virtual void mousePressEvent( QMouseEvent *event );
 
     void cellUpdated( QTableWidgetItem *item );
 

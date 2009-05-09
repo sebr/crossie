@@ -75,9 +75,7 @@ Qt::ItemFlags CrosswordCell::flags() const
 {
     if( isBlank() )
         return Qt::NoItemFlags;
-    if( isSolutionRevealed() )
-        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-    return Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled;
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
 QSize CrosswordCell::sizeHint() const

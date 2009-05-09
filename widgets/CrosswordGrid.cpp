@@ -86,9 +86,6 @@ void CrosswordGrid::setPuzzle( AcrossLitePuzzle* puzzle )
             colWidth  = cell->sizeHint().width();
             rowHeight = cell->sizeHint().height();
 
-            connect( cell, SIGNAL( updated() ),
-                     this,   SLOT( cellUpdated() ) );
-
             setItem( row, col, cell );
         }
     }
@@ -375,9 +372,8 @@ void CrosswordGrid::cellSelectedChanged()
     highlightWord();
 }
 
-void CrosswordGrid::cellUpdated()
+void CrosswordGrid::cellUpdated( QTableWidgetItem *item )
 {
-    QTableWidgetItem *item = dynamic_cast<QTableWidgetItem*>( sender() );
     if( item )
     {
         QModelIndex index = indexFromItem( item );

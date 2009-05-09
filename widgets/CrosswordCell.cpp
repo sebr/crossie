@@ -12,6 +12,7 @@
  ***************************************************************************/
 
 #include "CrosswordCell.h"
+#include "CrosswordGrid.h"
 
 #include <QColor>
 
@@ -92,7 +93,7 @@ QSizePolicy CrosswordCell::sizePolicy() const
 void CrosswordCell::setSolution( const QChar &letter )
 {
     m_solution = letter;
-    emit updated();
+    updated();
 }
 
 void CrosswordCell::setGuess( const QChar &letter )
@@ -104,7 +105,7 @@ void CrosswordCell::setGuess( const QChar &letter )
         return;
 
     m_guess = letter;
-    emit updated();
+    updated();
 }
 
 void CrosswordCell::revealSolution( const bool flag )
@@ -118,7 +119,7 @@ void CrosswordCell::revealSolution( const bool flag )
 void CrosswordCell::setShowCorrectness( const bool flag )
 {
     m_showCorrectness = flag;
-    emit updated();
+    updated();
 }
 
 bool CrosswordCell::isSolutionCorrect() const
@@ -133,17 +134,23 @@ void CrosswordCell::setNumber( const int number )
     if( m_number <= 0 )
         showNumber( false );
 
-    emit updated();
+    updated();
 }
 
 void CrosswordCell::showNumber( const bool flag )
 {
     m_isNumberShown = flag && m_number > 0;
-    emit updated();
+    updated();
 }
 
 void CrosswordCell::highlight( const bool flag )
 {
     m_isHighlighted = flag;
-    emit updated();
+    updated();
+}
+
+void CrosswordCell::updated()
+{
+    if( tableWidget() )
+        static_cast<CrosswordGrid*>( tableWidget() )->cellUpdated( this );
 }

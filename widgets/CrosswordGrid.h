@@ -63,12 +63,13 @@ public:
     virtual QSizePolicy sizePolicy() const;
     virtual void  keyPressEvent( QKeyEvent* e );
 
+    void cellUpdated( QTableWidgetItem *item );
+
 public slots:
     void clueSelected( AcrossLiteClue::Orientation orientation, int clueNumber );
 
 private slots:
     void cellSelectedChanged();
-    void cellUpdated();
 
 signals:
     void rowFocused( int row );

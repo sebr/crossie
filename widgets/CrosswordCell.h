@@ -16,10 +16,8 @@
 
 #include <QTableWidgetItem>
 
-class CrosswordCell : public QTableWidgetItem, public QObject
+class CrosswordCell : public QTableWidgetItem
 {
-    Q_OBJECT
-
     public:
         CrosswordCell();
         ~CrosswordCell();
@@ -56,10 +54,9 @@ class CrosswordCell : public QTableWidgetItem, public QObject
         virtual QSize sizeHint() const;
         virtual QSizePolicy sizePolicy() const;
 
-    signals:
+    private:
         void updated();
 
-    private:
         QChar m_solution;
         QChar m_guess;
         bool m_isSolutionRevealed;

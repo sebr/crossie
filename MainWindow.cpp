@@ -14,14 +14,11 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QFileDialog>
+#include <QStackedWidget>
 
 MainWindow::MainWindow( QWidget *parent )
         : QMainWindow( parent )
 {
-    m_crossword = new Crossword( this );
-
-    setCentralWidget( m_crossword );
-
     QMenu *fileMenu = menuBar()->addMenu( tr( "&File" ) );
     fileMenu->addAction( "&Open...", this, SLOT( launchOpenDialog() ), QKeySequence::Open );
     fileMenu->addAction( "&Save...", this, SLOT( launchSaveDialog() ), QKeySequence::Save );
@@ -72,6 +69,18 @@ MainWindow::MainWindow( QWidget *parent )
 //    QObject::connect (checkLetterButton,    SIGNAL(clicked(int)), this, SLOT(checkLetter()));
 //
 //    statusBar()->message ("Enjoy!", 5000);
+
+    setupWidget();
+}
+
+void MainWindow::setupWidget()
+{
+    m_crossword = new Crossword( this );
+
+    QStackedWidget *stacker = new QStackedWidget();
+    stacker->addWidget( m_crossword );
+
+    setCentralWidget( stacker );
 }
 
 void MainWindow::launchOpenDialog()

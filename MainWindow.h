@@ -36,6 +36,7 @@ class MainWindow : public QMainWindow
         void clearSolution();
 
     private:
+        void setupWidget();
         Crossword* m_crossword;
 };
 

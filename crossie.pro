@@ -11,7 +11,8 @@ SOURCES += main.cpp \
     widgets/CrosswordClueList.cpp \
     widgets/CrosswordCell.cpp \
     widgets/CrosswordGrid.cpp \
-    widgets/Crossword.cpp
+    widgets/Crossword.cpp \
+    widgets/CrosswordCellDelegate.cpp
 HEADERS += MainWindow.h \
     acrosslite/AcrossLiteClue.h \
     acrosslite/AcrossLiteGrid.h \
@@ -20,4 +21,5 @@ HEADERS += MainWindow.h \
     widgets/CrosswordClueList.h \
     widgets/CrosswordCell.h \
     widgets/CrosswordGrid.h \
-    widgets/Crossword.h
+    widgets/Crossword.h \
+    widgets/CrosswordCellDelegate.h

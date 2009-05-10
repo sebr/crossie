@@ -12,6 +12,7 @@
  ***************************************************************************/
 
 #include "CrosswordGrid.h"
+#include "CrosswordCellDelegate.h"
 
 #include <QDebug>
 #include <QHeaderView>
@@ -26,6 +27,8 @@ CrosswordGrid::CrosswordGrid( QWidget* parent )
     setEditTriggers( QAbstractItemView::NoEditTriggers );
     setSelectionMode( QAbstractItemView::SingleSelection );
     setSortingEnabled( false );
+
+    setItemDelegate( new CrosswordCellDelegate(this) );
 
     horizontalHeader()->hide();
     verticalHeader()->hide();

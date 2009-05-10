@@ -65,6 +65,9 @@ QVariant CrosswordCell::data( int role ) const
                 return Qt::yellow;
             return Qt::white;
         }
+        case ClueNumberRole:
+            return m_number > 0 ? QString::number( m_number ) : QString();
+
         default:
             break;
     }

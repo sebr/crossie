@@ -19,6 +19,10 @@
 class CrosswordCell : public QTableWidgetItem
 {
     public:
+        enum CellRole {
+            ClueNumberRole = Qt::UserRole
+        };
+
         CrosswordCell();
         ~CrosswordCell();
 

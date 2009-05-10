@@ -14,7 +14,6 @@
 #include "CrosswordGrid.h"
 #include "CrosswordCellDelegate.h"
 
-#include <QDebug>
 #include <QHeaderView>
 #include <QMouseEvent>
 
@@ -427,8 +426,6 @@ void CrosswordGrid::mousePressEvent( QMouseEvent *event )
 
 void CrosswordGrid::clueSelected( AcrossLiteClue::Orientation orientation, int clueNumber )
 {
-    qDebug() << "Highlighting" << (orientation == AcrossLiteClue::Across ? "across" : "down")<< "clue" << clueNumber;
-
     if( orientation == AcrossLiteClue::Across )
         m_focusOrientation = FocusHorizontal;
     else if( orientation == AcrossLiteClue::Down )

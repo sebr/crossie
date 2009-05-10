@@ -8,18 +8,18 @@ SOURCES += main.cpp \
     acrosslite/AcrossLiteClue.cpp \
     acrosslite/AcrossLiteGrid.cpp \
     acrosslite/AcrossLitePuzzle.cpp \
-    widgets/CrosswordClueList.cpp \
-    widgets/CrosswordCell.cpp \
-    widgets/CrosswordGrid.cpp \
-    widgets/Crossword.cpp \
-    widgets/CrosswordCellDelegate.cpp
+    crossword/CrosswordClueList.cpp \
+    crossword/CrosswordCell.cpp \
+    crossword/CrosswordGrid.cpp \
+    crossword/Crossword.cpp \
+    crossword/CrosswordCellDelegate.cpp
 HEADERS += MainWindow.h \
     acrosslite/AcrossLiteClue.h \
     acrosslite/AcrossLiteGrid.h \
     acrosslite/AcrossLitePuzzle.h \
-    widgets/CrosswordClue.h \
-    widgets/CrosswordClueList.h \
-    widgets/CrosswordCell.h \
-    widgets/CrosswordGrid.h \
-    widgets/Crossword.h \
-    widgets/CrosswordCellDelegate.h
+    crossword/CrosswordClue.h \
+    crossword/CrosswordClueList.h \
+    crossword/CrosswordCell.h \
+    crossword/CrosswordGrid.h \
+    crossword/Crossword.h \
+    crossword/CrosswordCellDelegate.h

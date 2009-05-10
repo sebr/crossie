@@ -13,7 +13,7 @@
 
 #include <QMainWindow>
 
-#include "widgets/Crossword.h"
+#include "crossword/Crossword.h"
 
 class MainWindow : public QMainWindow
 {

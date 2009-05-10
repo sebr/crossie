@@ -15,6 +15,7 @@
 #include "CrosswordGrid.h"
 
 #include <QColor>
+#include <QDebug>
 
 CrosswordCell::CrosswordCell()
     : QTableWidgetItem()
@@ -43,13 +44,13 @@ QVariant CrosswordCell::data( int role ) const
                 return QString();
             if( isSolutionRevealed() )
                 return m_solution.toUpper();
-            return QTableWidgetItem::data( role ).toString().toUpper();
+            return m_guess.toUpper();
         }
         case Qt::ForegroundRole:
         {
             if( isBlank() )
                 return Qt::black;
-            if( isSolutionRevealed() )
+            if( isSolutionRevealed() || isShowCorrectness() )
             {
                 if( isSolutionCorrect() )
                     return Qt::green;
@@ -112,9 +113,7 @@ void CrosswordCell::setGuess( const QChar &letter )
 void CrosswordCell::revealSolution( const bool flag )
 {
     m_isSolutionRevealed = flag;
-
-    if( flag )
-        setShowCorrectness( false );
+    updated();
 }
 
 void CrosswordCell::setShowCorrectness( const bool flag )
@@ -125,7 +124,7 @@ void CrosswordCell::setShowCorrectness( const bool flag )
 
 bool CrosswordCell::isSolutionCorrect() const
 {
-    return m_solution == m_guess;
+    return m_solution.toLower() == m_guess.toLower();
 }
 
 void CrosswordCell::setNumber( const int number )

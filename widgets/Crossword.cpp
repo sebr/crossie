@@ -142,8 +142,6 @@ void Crossword::cellSelectedChanged( int currentRow, int currentColumn, int prev
 
     m_grid->colRowToDownAcross( currentColumn, currentRow, down, across );
 
-    qDebug() << "selected across:" << across << "; down:" << down;
-
     m_downClues->clueSelected( down );
     m_acrossClues->clueSelected( across );
 }

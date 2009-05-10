@@ -38,7 +38,7 @@ class CrosswordCell : public QTableWidgetItem
         bool isSolutionRevealed() const { return m_isSolutionRevealed; }
 
         void setShowCorrectness( const bool flag );
-        bool showCorrectness() const { return m_showCorrectness; }
+        bool isShowCorrectness() const { return m_showCorrectness; }
         bool isSolutionCorrect() const;
 
         void setNumber( const int number = 0 );

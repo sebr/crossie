@@ -81,7 +81,7 @@ private:
     bool isOutOfBounds( const int row, const int col ) const;
     bool isBlankCell( const int col, const int row ) const;
 
-    bool handleArrowKey( QKeyEvent *event, QTableWidgetItem *item );
+    bool handleArrowKey( QKeyEvent *event, CrosswordCell *item );
 
     AcrossLitePuzzle *m_puzzle;
     FocusOrientation  m_focusOrientation;

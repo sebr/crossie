@@ -303,13 +303,13 @@ void CrosswordGrid::colRowToDownAcross( const int col, const int row,  int& down
 
 void CrosswordGrid::keyPressEvent( QKeyEvent *event )
 {
-    QTableWidgetItem *item = currentItem();
+    CrosswordCell *item = dynamic_cast<CrosswordCell*>( currentItem() );
     if( item )
     {
         if( (QChar(event->key()) >= 'a' && QChar(event->key()) <= 'z') ||
             (QChar(event->key()) >= 'A' && QChar(event->key()) <= 'Z') )
         {
-            item->setText( QChar(event->key()) );
+            item->setGuess( QChar(event->key()) );
 
             // The fake event allows us to gracefully handle moving to the next
             // square as if it were a key press
@@ -336,7 +336,7 @@ void CrosswordGrid::keyPressEvent( QKeyEvent *event )
 /**
   * Skips blank squares and moves to the next/prev col/row if necessary
   */
-bool CrosswordGrid::handleArrowKey( QKeyEvent *event, QTableWidgetItem *item )
+bool CrosswordGrid::handleArrowKey( QKeyEvent *event, CrosswordCell *item )
 {
     const bool isUp    = event->key() == Qt::Key_Up;
     const bool isDown  = event->key() == Qt::Key_Down;
@@ -349,7 +349,7 @@ bool CrosswordGrid::handleArrowKey( QKeyEvent *event, QTableWidgetItem *item )
     int row = item->row();
     int col = item->column();
 
-    CrosswordCell *nextItem = dynamic_cast<CrosswordCell*>( item );
+    CrosswordCell *nextItem = item;
 
     while( nextItem )
     {

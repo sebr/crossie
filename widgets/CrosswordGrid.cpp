@@ -325,6 +325,26 @@ void CrosswordGrid::keyPressEvent( QKeyEvent *event )
             }
             return;
         }
+
+        if( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete )
+        {
+            if( item->hasGuess() )
+                item->clearGuess();
+
+            if( event->key() == Qt::Key_Backspace )
+            {
+                if( focusOrientation() == CrosswordGrid::FocusHorizontal )
+                {
+                    QKeyEvent *fakeEvent = new QKeyEvent( event->type(), (int)Qt::Key_Left, event->modifiers() );
+                    handleArrowKey( fakeEvent, item );
+                }
+                else
+                {
+                    QKeyEvent *fakeEvent = new QKeyEvent( event->type(), (int)Qt::Key_Up, event->modifiers() );
+                    handleArrowKey( fakeEvent, item );
+                }
+            }
+        }
     }
 
     if( handleArrowKey(event, item) )

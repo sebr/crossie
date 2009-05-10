@@ -110,6 +110,12 @@ void CrosswordCell::setGuess( const QChar &letter )
     updated();
 }
 
+void CrosswordCell::clearGuess()
+{
+    m_guess = QChar();
+    updated();
+}
+
 void CrosswordCell::revealSolution( const bool flag )
 {
     m_isSolutionRevealed = flag;

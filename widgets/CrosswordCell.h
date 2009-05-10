@@ -33,6 +33,8 @@ class CrosswordCell : public QTableWidgetItem
 
         void setGuess( const QChar &letter );
         QChar guess() const { return m_guess; }
+        bool hasGuess() const { return !m_guess.isNull(); }
+        void clearGuess();
 
         void revealSolution( const bool flag );
         bool isSolutionRevealed() const { return m_isSolutionRevealed; }

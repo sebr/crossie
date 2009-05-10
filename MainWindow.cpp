@@ -25,16 +25,22 @@ MainWindow::MainWindow( QWidget *parent )
     QMenu *fileMenu = menuBar()->addMenu( tr( "&File" ) );
     fileMenu->addAction( "&Open...", this, SLOT( launchOpenDialog() ), QKeySequence::Open );
     fileMenu->addAction( "&Save...", this, SLOT( launchSaveDialog() ), QKeySequence::Save );
-    fileMenu->addAction( "&Quit",    qApp, SLOT( quit() ), QKeySequence::Close );
+    fileMenu->addAction( "&Quit",    qApp, SLOT( quit() ), QKeySequence(Qt::CTRL + Qt::Key_Q) );
 
     QMenu *viewMenu = menuBar()->addMenu( tr( "&View" ) );
-    viewMenu->addAction( "Reveal Puzzle", this, SLOT( revealSolution() ) );
-    viewMenu->addAction( "Reveal Word",   this, SLOT( revealWord() ) );
-    viewMenu->addAction( "Reveal Letter", this, SLOT( revealLetter() ) );
+    viewMenu->addAction( "Reveal Puzzle", this, SLOT( revealSolution() ),
+                         QKeySequence( Qt::CTRL + Qt::Key_R, Qt::CTRL + Qt::Key_S ) );
+    viewMenu->addAction( "Reveal Word",   this, SLOT( revealWord() ),
+                         QKeySequence( Qt::CTRL + Qt::Key_R, Qt::CTRL + Qt::Key_W ) );
+    viewMenu->addAction( "Reveal Letter", this, SLOT( revealLetter() ),
+                         QKeySequence( Qt::CTRL + Qt::Key_R, Qt::CTRL + Qt::Key_L ) );
     viewMenu->addSeparator();
-    viewMenu->addAction( "Check Puzzle",  this, SLOT( checkSolution() ) );
-    viewMenu->addAction( "Check Word",    this, SLOT( checkWord() ) );
-    viewMenu->addAction( "Check Letter",  this, SLOT( checkLetter() ) );
+    viewMenu->addAction( "Check Puzzle",  this, SLOT( checkSolution() ),
+                         QKeySequence( Qt::CTRL + Qt::Key_C, Qt::CTRL + Qt::Key_S ) );
+    viewMenu->addAction( "Check Word",    this, SLOT( checkWord() ),
+                         QKeySequence( Qt::CTRL + Qt::Key_C, Qt::CTRL + Qt::Key_W ) );
+    viewMenu->addAction( "Check Letter",  this, SLOT( checkLetter() ),
+                         QKeySequence( Qt::CTRL + Qt::Key_C, Qt::CTRL + Qt::Key_L ) );
     viewMenu->addSeparator();
     viewMenu->addAction( "Clear",         this, SLOT( clearSolution() ) );
 

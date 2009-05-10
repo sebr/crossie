@@ -11,6 +11,7 @@
 #include "CrosswordCellDelegate.h"
 #include "CrosswordCell.h"
 
+#include <QApplication>
 #include <QDebug>
 #include <QFont>
 #include <QPainter>
@@ -31,15 +32,12 @@ void CrosswordCellDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     {
         painter->save();
         QFont font;
-        font.setPointSize( font.pointSize() - 1 );
-
-        QRect rect = option.rect;
-        rect.setWidth( rect.width() / 2 );
-        rect.setHeight( rect.height() / 2 );
+        font.setPointSize( font.pointSize() - 2 );
 
         painter->setFont( font );
+        painter->setPen( qApp->palette().color( QPalette::Disabled, QPalette::Text ) );
         painter->setRenderHint( QPainter::Antialiasing );
-        painter->drawText( rect, number );
+        painter->drawText( option.rect.adjusted(2, 2, 0, 0), number );
 
         painter->restore();
     }

@@ -312,17 +312,17 @@ void CrosswordGrid::keyPressEvent( QKeyEvent *event )
         {
             item->setText( QChar(event->key()) );
 
+            // The fake event allows us to gracefully handle moving to the next
+            // square as if it were a key press
             if( focusOrientation() == CrosswordGrid::FocusHorizontal )
             {
-                int col = item->column();
-                if( col < columnCount() )
-                    setCurrentCell( item->row(), col + 1);
+                QKeyEvent *fakeEvent = new QKeyEvent( event->type(), (int)Qt::Key_Right, event->modifiers() );
+                handleArrowKey( fakeEvent, item );
             }
             else
             {
-                int row = item->row();
-                if( row < rowCount() )
-                    setCurrentCell( row + 1, item->column() );
+                QKeyEvent *fakeEvent = new QKeyEvent( event->type(), (int)Qt::Key_Down, event->modifiers() );
+                handleArrowKey( fakeEvent, item );
             }
             return;
         }

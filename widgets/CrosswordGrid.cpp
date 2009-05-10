@@ -410,6 +410,18 @@ void CrosswordGrid::mousePressEvent( QMouseEvent *event )
         return;
     }
 
+    if( event->button() == Qt::RightButton )
+    {
+        FocusOrientation orientation = cellOrientation( cell );
+        if( orientation == FocusBoth )
+        {
+            m_focusOrientation = ( m_focusOrientation == FocusHorizontal ) ?
+                                    FocusVertical : FocusHorizontal;
+            clearHighlights();
+            highlightWord();
+        }
+    }
+
     QTableView::mousePressEvent( event );
 }
 
